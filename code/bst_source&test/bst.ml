@@ -1,5 +1,3 @@
-(*#directory "../../module/4.08.1";;*)
-(*#load "btree.cmo"*)
 open Btree;;
 open List;;
 
@@ -38,7 +36,7 @@ let rec bst_linsert(t, e : 'a bst * 'a) : 'a bst =
 let rec bst_lbuild(l : 'a list) : 'a bst =
   match l with
   | [] -> empty()
-  | v::lt -> bst_linsert(bst_build(lt), v)
+  | v::lt -> bst_linsert(bst_lbuild(lt), v)
 ;;
 
 (* Retourne le plus grand élément *)
@@ -100,7 +98,7 @@ let rec bst_cut(t, e : 'a bst * 'a) : 'a bst * 'a bst =
       (rooting(root(t), lson(t), g), d)
 ;;
 
-(* Insère un élément *)
+(* Insère un élément à la racine *)
 
 let bst_rinsert(t, e : 'a bst * 'a) : 'a bst =
   let (g, d) = bst_cut(t, e) in
