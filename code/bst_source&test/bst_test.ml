@@ -7,7 +7,7 @@
 (* #directory "../libraries/4.05.0/";; *)
 
 (* OCaml version 4.08.1 *)
-(*#directory "../libraries/4.08.1/";;*)
+#directory "../libraries/4.08.1/";;
 
 (* OCaml version 4.10.0 *)
 (* #directory "../libraries/4.10.0/";; *)
@@ -27,6 +27,7 @@ let t1 : int bst = bst_lbuild([4;2;3;1;7;9]);;
 show_int_btree(t1);;
 let t2 : int bst = bst_lbuild([15;4;6;94;125]);;
 show_int_btree(t2);;
+show_int_btree(bst_lbuild([45;56;1;5;7;9;99;108;111;121;2;4;6;45;46;77;21;32]));;
 
 (* Insère aux feuilles un élément *)
 

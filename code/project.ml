@@ -32,11 +32,11 @@ open Bst;;
 
 (* Question 1 *)
 
-let rec create_liste(n : 'a) : 'a list =
+let rec create_list(n : int) : 'a list =
   
 ;;
 
-let rec bst_rnd_create() : 'a t_btree =
+let rec bst_rnd_create(n : int) : 'a t_btree =
   
 ;;
 
