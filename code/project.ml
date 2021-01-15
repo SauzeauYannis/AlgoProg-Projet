@@ -32,6 +32,10 @@ open Bst;;
 
 (* Question 1 *)
 
+let rec create_liste(n : 'a) : 'a list =
+  
+;;
+
 let rec bst_rnd_create() : 'a t_btree =
   
 ;;
