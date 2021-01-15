@@ -52,16 +52,20 @@ show_int_btree(b1);;
 
 (* Question 2 *)
 
+let max(n1, n2 : int * int) : int =
+  if n1 > n2
+  then n1
+  else n2
+;;
+
 (* Calcule le hauteur d'un arbre *)
 let rec height(tree : 'a t_btree) : int =
   if isEmpty(tree) || (isEmpty(rson(tree)) && isEmpty(lson(tree)))
   then 0
-  else (
-    if height(rson(tree)) > height(lson(tree))
-    then 1 + height(rson(tree))
-    else 1 + height(lson(tree))
-  )
+  else 1 + max(height(rson(tree)), height(lson(tree)))
 ;;
+
+height(b1);;
 
 (* Calcule le déséquilibre d'un arbre *)
 let rec weight_balance(tree : int t_btree) : int =
