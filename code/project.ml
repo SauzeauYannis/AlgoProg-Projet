@@ -32,7 +32,7 @@ open Bst;;
 
 (* Question 1 *)
 
-let rec create_liste(n : 'a) : 'a list =
+let rec list_rnd_create(n : int) : int list =
   
 ;;
 
