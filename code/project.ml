@@ -7,19 +7,19 @@
 (* Uncomment the load of your ocaml version *)
 
 (* OCaml version 4.02.3 *)
-(* #directory "../libraries/4.02.3/";; *)
+(* #directory "libraries/4.02.3/";; *)
 
 (* OCaml version 4.05.0 *)
-(* #directory "../libraries/4.05.0/";; *)
+(* #directory "libraries/4.05.0/";; *)
 
 (* OCaml version 4.08.1 *)
-(* #directory "../libraries/4.08.1/";;*)
+#directory "libraries/4.08.1/";;
 
 (* OCaml version 4.10.0 *)
-(* #directory "../libraries/4.10.0/";; *)
+(* #directory "libraries/4.10.0/";; *)
 
 (* OCaml version 4.11.1 *)
-(* #directory "../libraries/4.11.1/";; *)
+(* #directory "libraries/4.11.1/";; *)
 
 
 #load "btree.cmo";;
@@ -36,8 +36,8 @@ let rec list_rnd_create(n : int) : int list =
   
 ;;
 
-let rec bst_rnd_create(n : int) : 'a t_btree =
-  
+let bst_rnd_create(n : int) : int t_btree =
+  bst_lbuild(list_rnd_create(n))
 ;;
 
 (* Question 2 *)
