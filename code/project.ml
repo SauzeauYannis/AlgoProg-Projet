@@ -28,6 +28,7 @@
 open Btree;;
 open Bst;;
 open Random;;
+open List;;
 
 (*** 1 Arbres Binaires de recherche ***)
 
@@ -77,7 +78,26 @@ let rec weight_balance(tree : int t_btree) : int =
 
 weight_balance(b1);;
 
-let average_weight_balance(node_number, tree_number, limit : int * int * int) : float;;
+let rec create_weight_balance_list(node_number, tree_number, limit : int * int * int) : int list =
+  if(tree_number = 0)
+  then []
+  else let tree = bst_rnd_create(node_number, limit) in
+       weight_balance(tree)::create_weight_balance_list(node_number, tree_number-1, limit)
+;;
+
+let rec sum_list(list : int list) : int =
+  if(length(list) = 0)
+  then 0
+  else hd(list) + sum_list(tl(list))
+;;
+
+let average_weight_balance(node_number, tree_number, limit : int * int * int) : float =
+  let weight_balance_list = create_weight_balance_list(node_number, tree_number, limit) in
+  let sum_weight_balance_list = sum_list(weight_balance_list) in
+  float_of_int(sum_weight_balance_list) /. float_of_int(tree_number)
+;;
+
+average_weight_balance(10, 20, 50);;
 
 (* Question 3 *)
 
