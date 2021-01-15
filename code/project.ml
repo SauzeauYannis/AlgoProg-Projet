@@ -52,8 +52,26 @@ show_int_btree(b1);;
 
 (* Question 2 *)
 
+(* Calcule le hauteur d'un arbre *)
+let rec height(tree : 'a t_btree) : int =
+  if isEmpty(tree) || (isEmpty(rson(tree)) && isEmpty(lson(tree)))
+  then 0
+  else (
+    if height(rson(tree)) > height(lson(tree))
+    then 1 + height(rson(tree))
+    else 1 + height(lson(tree))
+  )
+;;
+
 (* Calcule le déséquilibre d'un arbre *)
-let weight_balance(tree : int t_btree) : int;;
+let rec weight_balance(tree : int t_btree) : int =
+  if isEmpty(tree)
+  then 0
+  else weight_balance(lson(tree)) + weight_balance(rson(tree)) +
+       (height(lson(tree)) - height(rson(tree)))
+;;
+
+weight_balance(b1);;
 
 let average_weight_balance(node_number, tree_number, limit : int * int * int) : float;;
 
