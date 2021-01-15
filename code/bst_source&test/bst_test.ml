@@ -1,23 +1,24 @@
 (* Uncomment the load of your ocaml version *)
 
 (* OCaml version 4.02.3 *)
-(* #directory "libraries/4.02.3/";; *)
+(* #directory "../libraries/4.02.3/";; *)
 
 (* OCaml version 4.05.0 *)
-(* #directory "libraries/4.05.0/";; *)
+(* #directory "../libraries/4.05.0/";; *)
 
 (* OCaml version 4.08.1 *)
 #directory "../libraries/4.08.1/";;
 
 (* OCaml version 4.10.0 *)
-(* #directory "libraries/4.10.0/";; *)
+(* #directory "../libraries/4.10.0/";; *)
 
 (* OCaml version 4.11.1 *)
-(* #directory "libraries/4.11.1/";; *)
+(* #directory "../libraries/4.11.1/";; *)
 
 #load "btree.cmo";;
 #load "bst.cmo";;
 
+open Btree;;
 open Bst;;
 
 (* Construit un ABR à partir d'une liste d'élem avec des insertions aux feuilles *)
