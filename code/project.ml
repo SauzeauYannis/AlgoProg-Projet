@@ -7,19 +7,19 @@
 (* Uncomment the load of your ocaml version *)
 
 (* OCaml version 4.02.3 *)
-(* #directory "libraries/4.02.3/";; *)
+(* #directory "../libraries/4.02.3/";; *)
 
 (* OCaml version 4.05.0 *)
-(* #directory "libraries/4.05.0/";; *)
+ #directory "libraries/4.05.0/";; 
 
 (* OCaml version 4.08.1 *)
-#directory "libraries/4.08.1/";;
+(* #directory "../libraries/4.08.1/";;*)
 
 (* OCaml version 4.10.0 *)
-(* #directory "libraries/4.10.0/";; *)
+(* #directory "../libraries/4.10.0/";; *)
 
 (* OCaml version 4.11.1 *)
-(* #directory "libraries/4.11.1/";; *)
+(* #directory "../libraries/4.11.1/";; *)
 
 
 #load "btree.cmo";;
@@ -27,18 +27,28 @@
 
 open Btree;;
 open Bst;;
+open Random;;
 
 (*** 1 Arbres Binaires de recherche ***)
 
 (* Question 1 *)
 
-let rec list_rnd_create(n : int) : int list =
-  
+let rec list_rnd_create(n, borne : int * int) : int list =
+  Random.self_init();
+  let rd : int = Random.int borne in
+  if(n = 0)
+  then []
+  else rd::list_rnd_create(n-1, borne)
 ;;
 
-let bst_rnd_create(n : int) : int t_btree =
-  bst_lbuild(list_rnd_create(n))
+list_rnd_create(10, 100);;
+
+let rec bst_rnd_create(n : int) : 'a t_btree =
+  bst_lbuild(list_rnd_create(n, 50))
 ;;
+
+let b1 = bst_rnd_create(10);;
+show_int_btree(b1);;
 
 (* Question 2 *)
 
