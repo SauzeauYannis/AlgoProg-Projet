@@ -42,6 +42,11 @@ let bst_rnd_create(n : int) : int t_btree =
 
 (* Question 2 *)
 
+(* Calcule le déséquilibre d'un arbre *)
+let weight_balance(t : int t_btree) : int;;
+
+let average_weight_balance(node_number, tree_number : int, int) : float;;
+
 (* Question 3 *)
 
 (* Question 4 *)
