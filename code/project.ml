@@ -89,25 +89,6 @@ let rec weight_balance(tree : int bst) : int =
 
 weight_balance(b1);;
 
-(*
-
-Ces deux fonctions peuvent être regroupé en 1 seule (cf sum_weight_balance)
-
-let rec create_weight_balance_list(node_number, tree_number, limit : int * int * int) : int list =
-  if(tree_number = 0)
-  then []
-  else let tree = bst_rnd_create(node_number, limit) in
-       weight_balance(tree)::create_weight_balance_list(node_number, tree_number-1, limit)
-;;
-
-let rec sum_list(list : int list) : int =
-  if(length(list) = 0)
-  then 0
-  else hd(list) + sum_list(tl(list))
-;;
-
-*)
-
 (** Calcule la somme de déséquilibre de plusieurs arbres binaires de recherche **)
 (* node_number : nombre de noeuds par arbre *)
 (* tree_number : nombre d'arbres binaire de recherche à générer *)
@@ -118,17 +99,6 @@ let rec sum_weight_balance(node_number, tree_number, limit : int * int * int) : 
   else let weight_balance : float = float_of_int(weight_balance(bst_rnd_create(node_number, limit))) in
        weight_balance +. sum_weight_balance(node_number, tree_number-1, limit)
 ;;
-
-(* 
-
-Ca raccourci aussi cette fonction
-
-let average_weight_balance(node_number, tree_number, limit : int * int * int) : float =
-  let weight_balance_list = create_weight_balance_list(node_number, tree_number, limit) in
-  let sum_weight_balance_list = sum_list(weight_balance_list) in
-  float_of_int(sum_weight_balance_list) /. float_of_int(tree_number)
-;;
- *)
 
 (** Calcule la moyenne de déséquilibre de plusieurs arbres binaires de recherche **)
 (* node_number : nombre de noeuds par arbre *)
