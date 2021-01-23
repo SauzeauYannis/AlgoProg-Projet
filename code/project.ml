@@ -103,7 +103,7 @@ let rec list_rnd_create_rnd_sl(size, limit, order : int * int * (int -> int)) : 
   then []
   else (
     Random.self_init();
-    let size_sublist = Random.int limit in
+    let size_sublist = Random.int size+1 in
     let rec create_list(size_sublist, temp : int * int) : int list =
       if (size_sublist = 0)
       then []
