@@ -111,13 +111,10 @@ let list_rnd_create_regular_sl(nb_sl, limit, order : int * int * (int -> int)) :
     if size = 0
     then []
     else
-      if (size mod 2) == 0
-      then (
-        let rd : int = Random.int limit in
-        rd::list_create(nb_sl, size-1, limit, order, rd))
-      else (
-        let n : int = order(tmp) in
-        n::list_create(nb_sl, size-1, limit, order, n))
+      let n = if (size mod 2) == 0
+              then Random.int limit
+              else order(tmp)
+      in n::list_create(nb_sl, size-1, limit, order, n)
   in list_create(nb_sl, nb_sl * 2, limit, order, 0)
 ;;
 
