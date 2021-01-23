@@ -95,22 +95,22 @@ average_weight_balance(100, 1000, 100);;
 (* Question 3 *)
 
 (** Créé une liste d'entiers aléatoires avec des sous-suites ordonnées de longueurs aléatoire **)
-(* size : nb sous liste *)
+(* nb_sl : nb sous liste *)
 (* limit : nombre aléatoire maximal *)
 (* order : fonctions d'ordre sur les sous-suites *)
-let rec list_rnd_create_rnd_sl(size, limit, order : int * int * (int -> int)) : int list =
-  if(size = 0)
+let rec list_rnd_create_rnd_sl(nb_sl, limit, order : int * int * (int -> int)) : int list =
+  if(nb_sl = 0)
   then []
   else (
     Random.self_init();
-    let size_sublist = Random.int size+1 in
+    let size_sublist = Random.int nb_sl+1 in
     let rec create_list(size_sublist, temp : int * int) : int list =
       if (size_sublist = 0)
       then []
       else let rd = order(temp) in
            rd::create_list(size_sublist-1, rd);
     in let rdval = Random.int limit in
-       create_list(size_sublist, rdval)@list_rnd_create_rnd_sl(size-1, limit, order)
+       create_list(size_sublist, rdval)@list_rnd_create_rnd_sl(nb_sl-1, limit, order)
   )
 ;;
 
