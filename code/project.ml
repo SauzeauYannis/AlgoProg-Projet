@@ -90,17 +90,31 @@ let average_weight_balance(node_number, tree_number, limit : int * int * int) : 
   in float_of_int(sum(node_number, tree_number, limit)) /. float_of_int(tree_number)
 ;;
 
-average_weight_balance(10, 20, 100);;
+average_weight_balance(100, 1000, 100);;
 
 (* Question 3 *)
 
 (** Créé une liste d'entiers aléatoires avec des sous-suites ordonnées de longueurs aléatoire **)
-(* size : taille de la liste *)
+(* size : nb sous liste *)
 (* limit : nombre aléatoire maximal *)
 (* order : fonctions d'ordre sur les sous-suites *)
 let rec list_rnd_create_rnd_sl(size, limit, order : int * int * (int -> int)) : int list =
+  if(size = 0)
+  then []
+  else (
+    Random.self_init();
+    let size_sublist = Random.int limit in
+    let rec create_list(size_sublist, temp : int * int) : int list =
+      if (size_sublist = 0)
+      then []
+      else let rd = order(temp) in
+           rd::create_list(size_sublist-1, rd);
+    in let rdval = Random.int limit in
+       create_list(size_sublist, rdval)@list_rnd_create_rnd_sl(size-1, limit, order)
+  )
 ;;
 
+list_rnd_create_rnd_sl(5, 10, function x -> x+1);;
 (** Créé une liste d'entiers aléatoires avec des sous-suites ordonnées de longueurs fixe **)
 (* nb_sl : nombre sous-liste *)
 (* limit : nombre aléatoire maximal *)
