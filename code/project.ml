@@ -158,7 +158,19 @@ list_rnd_create_inc_sl(5, 100, function x -> x * 2);;
 (* limit : nombre aléatoire maximal *)
 (* order : fonctions d'ordre sur les sous-suites *)
 let rec list_rnd_create_dec_sl(nb_sl, limit, order : int * int * (int -> int)) : int list =
+    Random.self_init();
+  let rec list_create(nb_sl, size, m, limit, order, tmp : int * int * int * int * (int -> int) * int) : int list =
+    if size = nb_sl
+    then []
+    else if m = size
+    then let n : int = Random.int limit
+         in n::list_create(nb_sl, size-1, 1, limit, order, n)
+    else let n : int = order(tmp)
+         in n::list_create(nb_sl, size, m+1, limit, order, n)
+  in list_create(1, nb_sl, 0, limit, order, 0)
 ;;
+
+list_rnd_create_dec_sl(5, 10, function x -> x * 2);;
 
 (** Créé un arbre binaire de recherche d'entiers aléatoires avec des sous-suites ordonnées **)
 (* node_number : nombre de noeuds *)
