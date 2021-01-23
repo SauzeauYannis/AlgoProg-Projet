@@ -110,28 +110,39 @@ let list_rnd_create_regular_sl(nb_sl, limit, order : int * int * (int -> int)) :
   let rec list_create(nb_sl, size, limit, order, tmp : int * int * int * (int -> int) * int) : int list =
     if size = 0
     then []
-    else
-      let n = if (size mod 2) == 0
-              then Random.int limit
-              else order(tmp)
-      in n::list_create(nb_sl, size-1, limit, order, n)
+    else let n = if (size mod 2) == 0
+                 then Random.int limit
+                 else order(tmp)
+         in n::list_create(nb_sl, size-1, limit, order, n)
   in list_create(nb_sl, nb_sl * 2, limit, order, 0)
 ;;
 
 list_rnd_create_regular_sl(5, 100, function x -> x * 2);;
   
 (** Créé une liste d'entiers aléatoires avec des sous-suites ordonnées de longueurs croissantes **)
-(* size : taille de la liste *)
+(* nb_sl : nombre sous-liste *)
 (* limit : nombre aléatoire maximal *)
 (* order : fonctions d'ordre sur les sous-suites *)
-let rec list_rnd_create_inc_sl(size, limit, order : int * int * (int -> int)) : int list =
+let rec list_rnd_create_inc_sl(nb_sl, limit, order : int * int * (int -> int)) : int list =
+  Random.self_init();
+  let rec list_create(nb_sl, size, m, limit, order, tmp : int * int * int * int * (int -> int) * int) : int list =
+    if nb_sl = size && m = size
+    then []
+    else if m = size
+    then let n : int = Random.int limit
+         in n::list_create(nb_sl, size+1, 1, limit, order, n)
+    else let n : int = order(tmp)
+         in n::list_create(nb_sl, size, m+1, limit, order, n)
+  in list_create(nb_sl, 0, 0, limit, order, 0)
 ;;
 
+list_rnd_create_inc_sl(5, 100, function x -> x * 2);;
+
 (** Créé une liste d'entiers aléatoires avec des sous-suites ordonnées de longueurs décroissantes **)
-(* size : taille de la liste *)
+(* nb_sl : nombre sous-liste *)
 (* limit : nombre aléatoire maximal *)
 (* order : fonctions d'ordre sur les sous-suites *)
-let rec list_rnd_create_dec_sl(size, limit, order : int * int * (int -> int)) : int list =
+let rec list_rnd_create_dec_sl(nb_sl, limit, order : int * int * (int -> int)) : int list =
 ;;
 
 (** Créé un arbre binaire de recherche d'entiers aléatoires avec des sous-suites ordonnées **)
