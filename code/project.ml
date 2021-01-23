@@ -163,14 +163,16 @@ let rec list_rnd_create_dec_sl(nb_sl, limit, order : int * int * (int -> int)) :
     if nb_sl = 0
     then []
     else
-      let n : int = order(tmp)
-      in if m = 1
-         then n::list_create(nb_sl-1, nb_sl-1, limit, order, n)
-         else
-           if m <> nb_sl
-           then n::list_create(nb_sl, m-1, limit, order, n)
-           else let n : int = Random.int limit
-                in n::list_create(nb_sl, m-1, limit, order, n)
+      if m = nb_sl
+      then let n : int = Random.int limit
+           in if m = 1
+              then n::list_create(nb_sl-1, m-1, limit, order, n)
+              else n::list_create(nb_sl, m-1, limit, order, n)
+      else
+        let n : int = order(tmp)
+        in if m = 1
+           then n::list_create(nb_sl-1, nb_sl-1, limit, order, n)
+           else n::list_create(nb_sl, m-1, limit, order, n)
   in list_create(nb_sl, nb_sl, limit, order, 0)
 ;;
 
@@ -204,9 +206,22 @@ let average_weight_balance_bis(node_number, tree_number, limit, order, func : in
   in float_of_int(sum(node_number, tree_number, limit, order, func)) /. float_of_int(tree_number)
 ;;
 
+average_weight_balance_bis(9, 20, 100, (function x -> x * x), list_rnd_create_rnd_sl);;
+average_weight_balance_bis(9, 20, 100, (function x -> x * 2), list_rnd_create_rnd_sl);;
+average_weight_balance_bis(9, 20, 100, (function x -> x + 2), list_rnd_create_rnd_sl);;
+
 average_weight_balance_bis(9, 20, 100, (function x -> x * x), list_rnd_create_regular_sl);;
 average_weight_balance_bis(9, 20, 100, (function x -> x * 2), list_rnd_create_regular_sl);;
 average_weight_balance_bis(9, 20, 100, (function x -> x + 2), list_rnd_create_regular_sl);;
+
+average_weight_balance_bis(9, 20, 100, (function x -> x * x), list_rnd_create_inc_sl);;
+average_weight_balance_bis(9, 20, 100, (function x -> x * 2), list_rnd_create_inc_sl);;
+average_weight_balance_bis(9, 20, 100, (function x -> x + 2), list_rnd_create_inc_sl);;
+
+average_weight_balance_bis(9, 20, 100, (function x -> x * x), list_rnd_create_dec_sl);;
+average_weight_balance_bis(9, 20, 100, (function x -> x * 2), list_rnd_create_dec_sl);;
+average_weight_balance_bis(9, 20, 100, (function x -> x + 2), list_rnd_create_dec_sl);;
+
 
 (* Question 4 *)
 
