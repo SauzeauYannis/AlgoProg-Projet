@@ -142,11 +142,12 @@ let rec list_rnd_create_inc_sl(nb_sl, limit, order : int * int * (int -> int)) :
   let rec list_create(nb_sl, size, m, limit, order, tmp : int * int * int * int * (int -> int) * int) : int list =
     if nb_sl = size && m = size
     then []
-    else if m = size
-    then let n : int = Random.int limit
-         in n::list_create(nb_sl, size+1, 1, limit, order, n)
-    else let n : int = order(tmp)
-         in n::list_create(nb_sl, size, m+1, limit, order, n)
+    else
+      if m = size
+      then let n : int = Random.int limit
+           in n::list_create(nb_sl, size+1, 1, limit, order, n)
+      else let n : int = order(tmp)
+           in n::list_create(nb_sl, size, m+1, limit, order, n)
   in list_create(nb_sl, 0, 0, limit, order, 0)
 ;;
 
