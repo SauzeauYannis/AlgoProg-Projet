@@ -131,6 +131,7 @@ let rebalance(tree : 'a avl) : 'a avl =
 
 (* ajout d'un noeud dans un AVL *)
 let rec ajt_val(elem, tree : 'a * 'a avl) : 'a avl =
+<<<<<<< HEAD
   if isEmpty(tree)
   then rooting(elem, empty(), empty())
   else
@@ -141,6 +142,24 @@ let rec ajt_val(elem, tree : 'a * 'a avl) : 'a avl =
       if elem > v
       then rebalance(rooting(v, g, ajt_val(elem, d)))
       else rebalance(rooting(v, g, d))                           
+=======
+     if(isEmpty(tree))
+     then rooting(elem, empty(), empty())
+     else let (v, g, d) = (root(tree), lson(tree), rson(tree)) in
+          if(elem < v)
+          then rebalance(rooting(v, ajt_val(elem, g), d))
+          else
+            if(elem > v)
+            then rebalance(rooting(v, g, ajt_val(elem, d)))
+            else rebalance(rooting(v, g, d))                           
+;;
+
+
+(* max d'un avl *)
+let avl_max(tree : 'a avl) : 'a =
+  match tree with
+  | Node(wb, bst) -> max_v(bst)
+>>>>>>> 464893d5a4bd354449a4765c91718bf8d9984f50
 ;;
 
 (* avl sans son max *)
