@@ -97,7 +97,7 @@ show_int_btree(rdg(a3));;
 (* Question 2 *)
 
 (* type somme t_btree + int (déséquilibre) à définir *)
-type avl = ;;
+type 'a avl = Node of int * 'a bst;;
 
 (* Calcul du déséquilibre d'un noeud *)
 let imbalance(tree : 'a bst) : int =
@@ -105,7 +105,7 @@ let imbalance(tree : 'a bst) : int =
 ;;
 
 (* Rééquilibrage d'un arbre de recherche *)
-let rebalance(tree : avl) : avl =
+let rebalance(tree : 'a avl) : avl =
 
 ;;
 
