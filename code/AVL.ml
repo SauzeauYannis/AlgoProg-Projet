@@ -99,14 +99,34 @@ show_int_btree(rdg(a3));;
 (* type somme t_btree + int (déséquilibre) à définir *)
 type 'a avl = Node of int * 'a bst;;
 
-(* Calcul du déséquilibre d'un noeud *)
-let imbalance(tree : 'a bst) : int =
-
+(* Calcul du déséquilibre d'un arbre binaire de recherche *)
+let rec weight_balance(tree : 'a bst) : int =
+  let rec height(t : 'a bst) : int =
+    if isEmpty(t) || (isEmpty(rson(t)) && isEmpty(lson(t)))
+    then 0
+    else 1 + max (height(rson(t))) (height(lson(t)))
+  in if isEmpty(tree)
+     then 0
+     else weight_balance(lson(tree)) + weight_balance(rson(tree)) +
+            (height(lson(tree)) - height(rson(tree)))
 ;;
 
 (* Rééquilibrage d'un arbre de recherche *)
-let rebalance(tree : 'a avl) : avl =
-
+let rebalance(tree : 'a avl) : 'a avl =
+  match tree with
+  | Node(wb, bst) ->
+     if wb > 2 || wb < 2
+     then tree
+     else
+       if wb = 2
+       then
+         if weight_balance(lson(bst)) = 1
+         then Node(1, rd(bst))
+         else Node(-1, rgd(bst))
+       else
+         if weight_balance(rson(bst)) = 1
+         then Node(1, rg(bst))
+         else Node(-1, rdg(bst))
 ;;
 
 (* Question 3 *)
