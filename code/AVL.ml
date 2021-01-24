@@ -135,29 +135,19 @@ let ajt_val(elem, tree : 'a * 'a avl) : 'a avl =
 
 ;;
 
-
-(* max d'un avl *)
-let avl_max(tree : 'a avl) : 'a =
-  match tree with
-  | Node(wb, bst) -> max_v(bst)
-;;
-
-
 (* avl sans son max *)
 let rec avl_dmax(tree : 'a avl) : 'a avl =
-  if isEmpty(t)
+  if isEmpty(tree)
   then invalid_arg "max : tree must not be empty"
   else
-    match tree with
-    | Node(wb, t) ->
-       let (v, g, d) = (root(t), lson(t), rson(t)) in
-       if isEmpty(d)
-       then g
-       else rebalance(Node(wb, rooting(v, g, avl_dmax(Node(,d)))))
+    let (v, g, d) = (root(tree), lson(tree), rson(tree)) in
+    if isEmpty(d)
+    then g
+    else rebalance(rooting(v, g,  avl_dmax(d)))
 ;;
 
 (* ajout d'un noeud dans un AVL *)
-let suppr_val(elem, tree : 'a * 'a avl) : 'a avl =
+let rec suppr_val(elem, tree : 'a * 'a avl) : 'a avl =
 
 ;;
 
