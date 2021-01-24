@@ -131,6 +131,29 @@ let rebalance(tree : 'a avl) : 'a avl =
 
 (* Question 3 *)
 
+(* ajout d'un noeud dans un AVL *)
+let ajt_val(elem, tree : 'a * 'a avl) : 'a avl =
+
+;;
+
+
+(* max d'un avl *)
+let avl_max(tree : 'a avl) : 'a =
+  
+;;
+
+
+(* dmax d'un avl *)
+let avl_dmax(tree : 'a avl) : 'a avl =
+  
+;;
+
+(* ajout d'un noeud dans un AVL *)
+let suppr_val(elem, tree : 'a * 'a avl) : 'a avl =
+
+;;
+
+
 (* Question 4 *)
 
 (** 2.2 Implantaion d'un module Av1 **)
