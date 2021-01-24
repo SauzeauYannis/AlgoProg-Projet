@@ -115,6 +115,7 @@ let rec list_rnd_create_rnd_sl(nb_sl, limit, order : int * int * (int -> int)) :
 ;;
 
 list_rnd_create_rnd_sl(5, 10, function x -> x+1);;
+
 (** Créé une liste d'entiers aléatoires avec des sous-suites ordonnées de longueurs fixe **)
 (* nb_sl : nombre sous-liste *)
 (* limit : nombre aléatoire maximal *)
