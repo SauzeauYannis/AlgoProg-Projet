@@ -233,27 +233,68 @@ average_weight_balance_bis(9, 20, 100, (function x -> x + 2), list_rnd_create_de
 
 (** Rotation gauche d'un arbre binaire **)
 (* tree : arbre binaire *)
-let rg(tree : t_btree) : t_btree =
-
+let rg(tree : 'a bst) : 'a bst =
+  if(isEmpty(tree))
+  then empty()
+  else 
+    if(isEmpty(rson(tree)))
+    then tree
+    else let (p, u, s) = (root(tree), lson(tree), rson(tree)) in
+         let (q, v, w) = (root(s), lson(s), rson(s)) in
+         rooting(q, rooting(p, u, v), w)
 ;;
+
+let t1 = bst_lbuild(list_rnd_create(20, 50));;
+show_int_btree(t1);;
+show_int_btree(rg(t1));;
+
 
 (** Rotation droite d'un arbre binaire **)
 (* tree : arbre binaire *)
-let rd(tree : t_btree) : t_btree =
-
+let rd(tree : 'a bst) : 'a bst =
+  if(isEmpty(tree))
+  then empty()
+  else 
+    if(isEmpty(lson(tree)))
+    then tree
+    else let (q, s, w) = (root(tree), lson(tree), rson(tree)) in
+         let (p, u, v) = (root(s), lson(s), rson(s)) in
+         rooting(p, u, rooting(q, v, w))
 ;;
+
+show_int_btree(rd(t1));;
 
 (** Rotation gauche droite d'un arbre binaire **)
 (* tree : arbre binaire *)
-let rgd(tree : t_btree) : t_btree =
-
+let rgd(tree : 'a bst) : 'a bst =
+  if(isEmpty(tree))
+  then empty()
+  else 
+    if(isEmpty(lson(tree)) && isEmpty(lson(tree)))
+    then tree
+    else let (q, s, w) = (root(tree), lson(tree), rson(tree)) in
+         rd(rooting(q, rg(s), w))
 ;;
+
+let t2 = bst_lbuild(list_rnd_create(8, 10));;
+show_int_btree(t2);;
+show_int_btree(rgd(t2));;
 
 (** Rotation droite gauche d'un arbre binaire **)
 (* tree : arbre binaire *)
-let rdg(tree : t_btree) : t_btree =
-
+let rdg(tree : 'a bst) : 'a bst =
+  if(isEmpty(tree))
+  then empty()
+  else 
+    if(isEmpty(lson(tree)) && isEmpty(lson(tree)))
+    then tree
+    else let (q, s, w) = (root(tree), lson(tree), rson(tree)) in
+         rg(rooting(q, s, rd(w)))
 ;;
+
+show_int_btree(t2);;
+show_int_btree(rdg(t2));;
+
 
 (* Question 2 *)
 
