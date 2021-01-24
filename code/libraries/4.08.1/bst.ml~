@@ -98,7 +98,7 @@ let rec bst_cut(t, e : 'a bst * 'a) : 'a bst * 'a bst =
       (rooting(root(t), lson(t), g), d)
 ;;
 
-(* Insère un élément *)
+(* Insère un élément à la racine *)
 
 let bst_rinsert(t, e : 'a bst * 'a) : 'a bst =
   let (g, d) = bst_cut(t, e) in

@@ -50,8 +50,8 @@ bst_seek(t2, 7);;
 
 (* Retourne le plus grand élément *)
 
-max(t1);;
-max(t6);;
+max_v(t1);;
+max_v(t6);;
 
 (* Retourne l'arbre sans son plus grand élément *)
 

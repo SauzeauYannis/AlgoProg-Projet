@@ -41,13 +41,13 @@ let rec bst_lbuild(l : 'a list) : 'a bst =
 
 (* Retourne le plus grand élément *)
 
-let rec max(t : 'a bst) : 'a =
+let rec max_v(t : 'a bst) : 'a =
   if isEmpty(t)
   then invalid_arg "max : tree must not be empty"
   else
     if isEmpty(rson(t))
     then root(t)
-    else max(rson(t))
+    else max_v(rson(t))
 ;;
 
 (* Retourne l'arbre sans son plus grand élément *)
@@ -79,7 +79,7 @@ let rec bst_delete(e, t : 'a * 'a bst) : 'a bst =
         else
           if isEmpty(g)
           then d
-          else rooting(max(g), dmax(g), d)
+          else rooting(max_v(g), dmax(g), d)
 ;;
 
 
