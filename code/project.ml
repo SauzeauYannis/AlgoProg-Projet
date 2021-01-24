@@ -231,6 +231,30 @@ average_weight_balance_bis(9, 20, 100, (function x -> x + 2), list_rnd_create_de
 
 (* Question 1 *)
 
+(** Rotation gauche d'un arbre binaire **)
+(* tree : arbre binaire *)
+let rg(tree : t_btree) : t_btree =
+
+;;
+
+(** Rotation droite d'un arbre binaire **)
+(* tree : arbre binaire *)
+let rd(tree : t_btree) : t_btree =
+
+;;
+
+(** Rotation gauche droite d'un arbre binaire **)
+(* tree : arbre binaire *)
+let rgd(tree : t_btree) : t_btree =
+
+;;
+
+(** Rotation droite gauche d'un arbre binaire **)
+(* tree : arbre binaire *)
+let rdg(tree : t_btree) : t_btree =
+
+;;
+
 (* Question 2 *)
 
 (* Question 3 *)
