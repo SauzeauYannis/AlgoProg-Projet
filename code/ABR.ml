@@ -58,8 +58,7 @@ let rec weight_balance(tree : 'a bst) : int =
     else 1 + max (height(rson(t))) (height(lson(t)))
   in if isEmpty(tree)
      then 0
-     else weight_balance(lson(tree)) + weight_balance(rson(tree)) +
-            (height(lson(tree)) - height(rson(tree)))
+     else height(lson(tree)) - height(rson(tree))
 ;;
 
 weight_balance(b1);;

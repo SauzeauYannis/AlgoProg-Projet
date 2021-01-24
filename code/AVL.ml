@@ -34,12 +34,15 @@ open Bst;;
 
 (* Question 1 *)
 
+(* Type de l'arbre AVL *)
+type 'a avl = 'a bst;;
+
 (* Rotation gauche d'un arbre binaire *)
-let rg(tree : 'a bst) : 'a bst =
-  if(isEmpty(tree))
+let rg(tree : 'a avl) : 'a avl =
+  if isEmpty(tree)
   then empty()
   else 
-    if(isEmpty(rson(tree)))
+    if isEmpty(rson(tree))
     then tree
     else let (p, u, s) = (root(tree), lson(tree), rson(tree)) in
          let (q, v, w) = (root(s), lson(s), rson(s)) in
@@ -51,11 +54,11 @@ show_int_btree(a1);;
 show_int_btree(rg(a1));;
 
 (* Rotation droite d'un arbre binaire *)
-let rd(tree : 'a bst) : 'a bst =
-  if(isEmpty(tree))
+let rd(tree : 'a avl) : 'a avl =
+  if isEmpty(tree)
   then empty()
   else 
-    if(isEmpty(lson(tree)))
+    if isEmpty(lson(tree))
     then tree
     else let (q, s, w) = (root(tree), lson(tree), rson(tree)) in
          let (p, u, v) = (root(s), lson(s), rson(s)) in
@@ -65,11 +68,11 @@ let rd(tree : 'a bst) : 'a bst =
 show_int_btree(rg(rd(a1)));;
 
 (* Rotation gauche droite d'un arbre binaire *)
-let rgd(tree : 'a bst) : 'a bst =
-  if(isEmpty(tree))
+let rgd(tree : 'a avl) : 'a avl =
+  if isEmpty(tree)
   then empty()
   else 
-    if(isEmpty(lson(tree)) && isEmpty(lson(tree)))
+    if isEmpty(lson(tree)) && isEmpty(lson(tree))
     then tree
     else let (q, s, w) = (root(tree), lson(tree), rson(tree)) in
          rd(rooting(q, rg(s), w))
@@ -80,11 +83,11 @@ show_int_btree(a2);;
 show_int_btree(rgd(a2));;
 
 (* Rotation droite gauche d'un arbre binaire *)
-let rdg(tree : 'a bst) : 'a bst =
-  if(isEmpty(tree))
+let rdg(tree : 'a avl) : 'a avl =
+  if isEmpty(tree)
   then empty()
   else 
-    if(isEmpty(lson(tree)) && isEmpty(lson(tree)))
+    if isEmpty(lson(tree)) && isEmpty(lson(tree))
     then tree
     else let (q, s, w) = (root(tree), lson(tree), rson(tree)) in
          rg(rooting(q, s, rd(w)))
@@ -96,9 +99,6 @@ show_int_btree(rdg(a3));;
 
 (* Question 2 *)
 
-(* type somme t_btree + int (déséquilibre) à définir *)
-type 'a avl = 'a bst;;
-
 (* Calcul du déséquilibre d'un arbre binaire de recherche *)
 let rec weight_balance(tree : 'a avl) : int =
   let rec height(t : 'a avl) : int =
@@ -107,14 +107,13 @@ let rec weight_balance(tree : 'a avl) : int =
     else 1 + max (height(rson(t))) (height(lson(t)))
   in if isEmpty(tree)
      then 0
-     else weight_balance(lson(tree)) + weight_balance(rson(tree)) +
-            (height(lson(tree)) - height(rson(tree)))
+     else height(lson(tree)) - height(rson(tree))
 ;;
 
 (* Rééquilibrage d'un arbre de recherche *)
 let rebalance(tree : 'a avl) : 'a avl =
   let wb : int = weight_balance(tree) in
-  if wb < 2 || wb > -2
+  if wb > - 2 && wb < 2
   then tree
   else
     if wb = 2
@@ -131,16 +130,17 @@ let rebalance(tree : 'a avl) : 'a avl =
 (* Question 3 *)
 
 (* ajout d'un noeud dans un AVL *)
-let ajt_val(elem, tree : 'a * 'a avl) : 'a avl =
-     if(isEmpty(tree))
-     then rooting(elem, empty(), empty())
-     else let (v, g, d) = (root(tree), lson(tree), rson(tree)) in
-          if(elem < v)
-          then rebalance(rooting(v, ajt_val(elem, g), d))
-          else
-            if(elem > v)
-            then rebalance(rooting(v, g, ajt_val(elem, d)))
-            else rebalance(rooting(v, g, d))                           
+let rec ajt_val(elem, tree : 'a * 'a avl) : 'a avl =
+  if isEmpty(tree)
+  then rooting(elem, empty(), empty())
+  else
+    let (v, g, d) = (root(tree), lson(tree), rson(tree)) in
+    if elem < v
+    then rebalance(rooting(v, ajt_val(elem, g), d))
+    else
+      if elem > v
+      then rebalance(rooting(v, g, ajt_val(elem, d)))
+      else rebalance(rooting(v, g, d))                           
 ;;
 
 (* avl sans son max *)
@@ -156,9 +156,58 @@ let rec avl_dmax(tree : 'a avl) : 'a avl =
 
 (* ajout d'un noeud dans un AVL *)
 let rec suppr_val(elem, tree : 'a * 'a avl) : 'a avl =
-
+  if isEmpty(tree)
+  then empty()
+  else
+    let (v, g, d) = (root(tree), lson(tree), rson(tree)) in
+    if elem < v
+    then rebalance(rooting(v, suppr_val(elem, g), d))
+    else
+      if elem > v
+      then rebalance(rooting(v, g, suppr_val(elem, d)))
+      else
+        if isEmpty(g) && isEmpty(d)
+        then g
+        else
+          if not(isEmpty(d))
+          then d
+          else rebalance(rooting(max_v(g), avl_dmax(g), d))
 ;;
 
+let a4 = ajt_val(10,
+                 ajt_val(14,
+                         ajt_val(11,
+                                 ajt_val(9,
+                                         ajt_val(7,
+                                                 ajt_val(4,
+                                                         ajt_val(5,
+                                                                 ajt_val(2,
+                                                                         ajt_val(3,
+                                                                                 ajt_val(12, empty())
+                                                                           )
+                                                                   )
+                                                           )
+                                                   )
+                                           )
+                                   )
+                           )
+                   )
+           )
+;;
+show_int_btree(a4);;
+let a5 = suppr_val(4,
+                   suppr_val(7,
+                             suppr_val(9,
+                                       suppr_val(11,
+                                                 suppr_val(10,
+                                                           suppr_val(14,a4)
+                                                   )
+                                         )
+                               )
+                     )
+           )
+;;
+show_int_btree(a5);;
 
 (* Question 4 *)
 
