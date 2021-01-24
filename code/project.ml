@@ -245,9 +245,12 @@ let rg(tree : 'a bst) : 'a bst =
          rooting(q, rooting(p, u, v), w)
 ;;
 
-let t1 = bst_lbuild(list_rnd_create(20, 50));;
+let t1 = bst_rnd_create(20, 50);;
 show_int_btree(t1);;
 show_int_btree(rg(t1));;
+let t2 = bst_lbuild([8;6;7;3;5]);;
+show_int_btree(t2);;
+show_int_btree(rg(t2));;
 
 
 (** Rotation droite d'un arbre binaire **)
@@ -264,6 +267,7 @@ let rd(tree : 'a bst) : 'a bst =
 ;;
 
 show_int_btree(rd(t1));;
+show_int_btree(rg(rd(t2)));;
 
 (** Rotation gauche droite d'un arbre binaire **)
 (* tree : arbre binaire *)
@@ -277,9 +281,12 @@ let rgd(tree : 'a bst) : 'a bst =
          rd(rooting(q, rg(s), w))
 ;;
 
-let t2 = bst_lbuild(list_rnd_create(8, 10));;
-show_int_btree(t2);;
-show_int_btree(rgd(t2));;
+let t3 = bst_rnd_create(8, 10);;
+show_int_btree(t3);;
+show_int_btree(rgd(t3));;
+let t4 = bst_lbuild([6;8;7;3;5;12;10]);;
+show_int_btree(t4);;
+show_int_btree(rgd(t4));;
 
 (** Rotation droite gauche d'un arbre binaire **)
 (* tree : arbre binaire *)
@@ -295,7 +302,9 @@ let rdg(tree : 'a bst) : 'a bst =
 
 show_int_btree(t2);;
 show_int_btree(rdg(t2));;
-
+let t5 = bst_lbuild([6;8;7;12;10;3;5]);;
+show_int_btree(t5);;
+show_int_btree(rdg(t5));;
 
 (* Question 2 *)
 
