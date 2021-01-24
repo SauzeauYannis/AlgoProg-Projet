@@ -131,7 +131,7 @@ let rebalance(tree : 'a avl) : 'a avl =
 (* Question 3 *)
 
 (* ajout d'un noeud dans un AVL *)
-let ajt_val(elem, tree : 'a * 'a avl) : 'a avl =
+let rec ajt_val(elem, tree : 'a * 'a avl) : 'a avl =
      if(isEmpty(tree))
      then rooting(elem, empty(), empty())
      else let (v, g, d) = (root(tree), lson(tree), rson(tree)) in
