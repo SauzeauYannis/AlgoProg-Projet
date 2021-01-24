@@ -115,7 +115,7 @@ let rec weight_balance(tree : 'a bst) : int =
 let rebalance(tree : 'a avl) : 'a avl =
   match tree with
   | Node(wb, bst) ->
-     if wb > 2 || wb < 2
+     if wb < 2 || wb > -2
      then tree
      else
        if wb = 2
