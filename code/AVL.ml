@@ -97,11 +97,11 @@ show_int_btree(rdg(a3));;
 (* Question 2 *)
 
 (* type somme t_btree + int (déséquilibre) à définir *)
-type 'a avl = Node of int * 'a bst;;
+type 'a avl = 'a bst;;
 
 (* Calcul du déséquilibre d'un arbre binaire de recherche *)
-let rec weight_balance(tree : 'a bst) : int =
-  let rec height(t : 'a bst) : int =
+let rec weight_balance(tree : 'a avl) : int =
+  let rec height(t : 'a avl) : int =
     if isEmpty(t) || (isEmpty(rson(t)) && isEmpty(lson(t)))
     then 0
     else 1 + max (height(rson(t))) (height(lson(t)))
@@ -113,20 +113,19 @@ let rec weight_balance(tree : 'a bst) : int =
 
 (* Rééquilibrage d'un arbre de recherche *)
 let rebalance(tree : 'a avl) : 'a avl =
-  match tree with
-  | Node(wb, bst) ->
-     if wb < 2 || wb > -2
-     then tree
-     else
-       if wb = 2
-       then
-         if weight_balance(lson(bst)) = 1
-         then Node(1, rd(bst))
-         else Node(-1, rgd(bst))
+  let wb : int = weight_balance(tree) in
+  if wb < 2 || wb > -2
+  then tree
+  else
+    if wb = 2
+    then
+      if weight_balance(lson(tree)) = 1
+      then rd(tree)
+      else rgd(tree)
        else
-         if weight_balance(rson(bst)) = 1
-         then Node(1, rg(bst))
-         else Node(-1, rdg(bst))
+         if weight_balance(rson(tree)) = 1
+         then rg(tree)
+         else rdg(tree)
 ;;
 
 (* Question 3 *)
@@ -139,13 +138,22 @@ let ajt_val(elem, tree : 'a * 'a avl) : 'a avl =
 
 (* max d'un avl *)
 let avl_max(tree : 'a avl) : 'a =
-  
+  match tree with
+  | Node(wb, bst) -> max_v(bst)
 ;;
 
 
-(* dmax d'un avl *)
-let avl_dmax(tree : 'a avl) : 'a avl =
-  
+(* avl sans son max *)
+let rec avl_dmax(tree : 'a avl) : 'a avl =
+  if isEmpty(t)
+  then invalid_arg "max : tree must not be empty"
+  else
+    match tree with
+    | Node(wb, t) ->
+       let (v, g, d) = (root(t), lson(t), rson(t)) in
+       if isEmpty(d)
+       then g
+       else rebalance(Node(wb, rooting(v, g, avl_dmax(Node(,d)))))
 ;;
 
 (* ajout d'un noeud dans un AVL *)
