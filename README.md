@@ -28,13 +28,13 @@ Ce projet a été développé en binôme.
 
 ### Utilisation
 
-blabla
+Projet en développement jusqu'au 5 février.
 
 <a name="fr_cp"/>
 
 ### Compétences acquises
 
-blabla
+Projet en développement jusqu'au 5 février.
 
 <a name="fr_rs"/>
 
@@ -58,13 +58,13 @@ This project was developed in pairs.
 
 ### Use
 
-blabla
+Project in development until 5 February.
 
 <a name="en_sk"/>
 
 ### Skills acquired
 
-blabla
+Project in development until 5 February.
   
 <a name="en_rs"/>
 
