@@ -64,7 +64,7 @@ show_int_btree(rg(rd(a1)));;
 
 (* Rotation gauche droite d'un arbre binaire *)
 let rgd(tree : 'a avl) : 'a avl =
-  if not(isEmpty(tree)) && not(isEmpty(lson(tree))) && not(isEmpty(lson(tree)))
+  if not(isEmpty(tree)) && not(isEmpty(lson(tree))) && not(isEmpty(rson(lson(tree))))
   then let (r, s, w) = (root(tree), lson(tree), rson(tree)) in
          let (p, t, a) = (root(s), lson(s), rson(s)) in
          let (q, u, v) = (root(a), lson(a), rson(a)) in
@@ -78,7 +78,7 @@ show_int_btree(rgd(a2));;
 
 (* Rotation droite gauche d'un arbre binaire *)
 let rdg(tree : 'a avl) : 'a avl =
-  if not(isEmpty(tree)) && not(isEmpty(lson(tree))) && not(isEmpty(lson(tree)))
+  if not(isEmpty(tree)) && not(isEmpty(rson(tree))) && not(isEmpty(lson(rson(tree))))
   then let (r, t, s) = (root(tree), lson(tree), rson(tree)) in
          let (p, a, w) = (root(s), lson(s), rson(s)) in
          let (q, u, v) = (root(a), lson(a), rson(a)) in
