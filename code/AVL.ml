@@ -40,14 +40,11 @@ type 'a avl = 'a bst;;
 
 (* Rotation gauche d'un arbre binaire *)
 let rg(tree : 'a avl) : 'a avl =
-  if isEmpty(tree)
-  then empty()
-  else 
-    if isEmpty(rson(tree))
-    then tree
-    else let (p, u, s) = (root(tree), lson(tree), rson(tree)) in
-         let (q, v, w) = (root(s), lson(s), rson(s)) in
-         rooting(q, rooting(p, u, v), w)
+  if not(isEmpty(tree)) && not(isEmpty(rson(tree)))
+  then let (p, u, s) = (root(tree), lson(tree), rson(tree)) in
+       let (q, v, w) = (root(s), lson(s), rson(s)) in
+       rooting(q, rooting(p, u, v), w)
+  else failwith "rotation gauche"
 ;;
 
 let a1 = bst_lbuild([8;6;7;3;5]);;
@@ -56,27 +53,21 @@ show_int_btree(rg(a1));;
 
 (* Rotation droite d'un arbre binaire *)
 let rd(tree : 'a avl) : 'a avl =
-  if isEmpty(tree)
-  then empty()
-  else 
-    if isEmpty(lson(tree))
-    then tree
-    else let (q, s, w) = (root(tree), lson(tree), rson(tree)) in
-         let (p, u, v) = (root(s), lson(s), rson(s)) in
-         rooting(p, u, rooting(q, v, w))
+  if not(isEmpty(tree)) && not(isEmpty(lson(tree)))
+  then let (q, s, w) = (root(tree), lson(tree), rson(tree)) in
+       let (p, u, v) = (root(s), lson(s), rson(s)) in
+       rooting(p, u, rooting(q, v, w))
+  else failwith "rotation droite"
 ;;
 
 show_int_btree(rg(rd(a1)));;
 
 (* Rotation gauche droite d'un arbre binaire *)
 let rgd(tree : 'a avl) : 'a avl =
-  if isEmpty(tree)
-  then empty()
-  else 
-    if isEmpty(lson(tree)) && isEmpty(lson(tree))
-    then tree
-    else let (q, s, w) = (root(tree), lson(tree), rson(tree)) in
-         rd(rooting(q, rg(s), w))
+  if not(isEmpty(tree)) && not(isEmpty(lson(tree))) && not(isEmpty(lson(tree)))
+  then let (q, s, w) = (root(tree), lson(tree), rson(tree)) in
+       rd(rooting(q, rg(s), w))
+  else failwith "rotation gauche droite"
 ;;
 
 let a2 = bst_lbuild([6;8;7;3;5;12;10]);;
@@ -85,13 +76,10 @@ show_int_btree(rgd(a2));;
 
 (* Rotation droite gauche d'un arbre binaire *)
 let rdg(tree : 'a avl) : 'a avl =
-  if isEmpty(tree)
-  then empty()
-  else 
-    if isEmpty(lson(tree)) && isEmpty(lson(tree))
-    then tree
-    else let (q, s, w) = (root(tree), lson(tree), rson(tree)) in
-         rg(rooting(q, s, rd(w)))
+  if not(isEmpty(tree)) && not(isEmpty(lson(tree))) && not(isEmpty(lson(tree)))
+  then let (q, s, w) = (root(tree), lson(tree), rson(tree)) in
+       rg(rooting(q, s, rd(w)))
+  else failwith "rotation droite gauche"
 ;;
 
 let a3 = bst_lbuild([6;8;7;12;10;3;5]);;
@@ -128,13 +116,13 @@ let rebalance(tree : 'a avl) : 'a avl =
     else
       if wb = -2
       then
-        if weight_balance(rson(tree)) = 1
+        if weight_balance(rson(tree)) = -1
         then rg(tree)
         else
-          if weight_balance(rson(tree)) = -1
+          if weight_balance(rson(tree)) = 1
           then rdg(tree)
           else tree
-      else tree
+      else failwith "weight_balance(tree): value incorrect"
 ;;
 
 (* Question 3 *)
@@ -253,7 +241,7 @@ let a7 = avl_rnd_create(100, 1000);;
 show_int_btree(a7);;
 weight_balance(a7);;
 
-let a7 = avl_rnd_create(1000, 10000);;
-weight_balance(a7);;
+let a8 = avl_rnd_create(1000, 10000);;
+weight_balance(a8);;
 
 (* Question 2 *)
