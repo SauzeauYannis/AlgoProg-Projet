@@ -217,8 +217,18 @@ show_int_btree(a5);;
 
 (* Question 4 *)
 
+Bst.bst_seek(a4, 10);;
+Bst.bst_seek(a5, 10);;
+
 (** 2.2 Implantaion d'un module Av1 **)
 
 (* Question 1 *)
 
+(* Crée des arbres avl à partir d'une suite d'entiers*)
+let avl_rnd_create(node_number, limit : int * int) : 'a avl =
+  ABR.bst_rnd_create(node_number, limit)
+;;
+
 (* Question 2 *)
+
+
