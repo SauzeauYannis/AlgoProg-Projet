@@ -114,18 +114,27 @@ let weight_balance(tree : 'a avl) : int =
 (* Rééquilibrage d'un arbre de recherche *)
 let rebalance(tree : 'a avl) : 'a avl =
   let wb : int = weight_balance(tree) in
-  if wb > - 2 && wb < 2
+  if wb = 0 || wb = 1 || wb = -1
   then tree
   else
     if wb = 2
     then
       if weight_balance(lson(tree)) = 1
       then rd(tree)
-      else rgd(tree)
-       else
-         if weight_balance(rson(tree)) = 1
-         then rg(tree)
-         else rdg(tree)
+      else
+        if weight_balance(lson(tree)) = -1
+        then rgd(tree)
+        else tree
+    else
+      if wb = -2
+      then
+        if weight_balance(rson(tree)) = 1
+        then rg(tree)
+        else
+          if weight_balance(rson(tree)) = -1
+          then rdg(tree)
+          else tree
+      else tree
 ;;
 
 (* Question 3 *)
@@ -222,7 +231,7 @@ bst_seek(a5, 10);;
 let rec avl_lbuild(l : 'a list) : 'a avl =
   match l with
   | [] -> empty()
-  | v::lt -> ajt_val(v, bst_lbuild(lt))
+  | v::lt -> ajt_val(v, avl_lbuild(lt))
 ;;
 
 (* Crée des arbres avl à partir d'une suite d'entiers *)
@@ -239,5 +248,12 @@ let avl_rnd_create(node_number, limit : int * int) : 'a avl =
 let a6 = avl_rnd_create(10, 100);;
 show_int_btree(a6);;
 weight_balance(a6);;
+
+let a7 = avl_rnd_create(100, 1000);;
+show_int_btree(a7);;
+weight_balance(a7);;
+
+let a7 = avl_rnd_create(1000, 10000);;
+weight_balance(a7);;
 
 (* Question 2 *)
