@@ -276,3 +276,20 @@ cmpl(10000, 100000);;
     
 
 (* Question 2 *)
+
+let a9 = avl_rnd_create(10000, 100000);;
+
+let t = Sys.time() in
+    let a10 = ajt_val(9999, a9) in
+    Printf.printf "Execution time: %f secondsn\n"
+      (Sys.time() -. t);
+    let t = Sys.time() in
+    let res = bst_seek(a10, 9999) in
+    Printf.printf "Execution time: %f secondsn\n"
+      (Sys.time() -. t);
+    let t = Sys.time() in
+    let a11 = suppr_val(9999, a10) in
+    Printf.printf "Execution time: %f secondsn\n"
+      (Sys.time() -. t);
+    a11
+;;
