@@ -75,8 +75,10 @@ let rgd(tree : 'a avl) : 'a avl =
   else 
     if isEmpty(lson(tree)) && isEmpty(lson(tree))
     then tree
-    else let (q, s, w) = (root(tree), lson(tree), rson(tree)) in
-         rd(rooting(q, rg(s), w))
+    else let (r, s, w) = (root(tree), lson(tree), rson(tree)) in
+         let (p, t, a) = (root(s), lson(s), rson(s)) in
+         let (q, u, v) = (root(a), lson(a), rson(a)) in
+         rooting(q, rooting(p, t, u), rooting(r, v, w))
 ;;
 
 let a2 = bst_lbuild([6;8;7;3;5;12;10]);;
@@ -90,8 +92,10 @@ let rdg(tree : 'a avl) : 'a avl =
   else 
     if isEmpty(lson(tree)) && isEmpty(lson(tree))
     then tree
-    else let (q, s, w) = (root(tree), lson(tree), rson(tree)) in
-         rg(rooting(q, s, rd(w)))
+    else let (r, t, s) = (root(tree), lson(tree), rson(tree)) in
+         let (p, a, w) = (root(s), lson(s), rson(s)) in
+         let (q, u, v) = (root(a), lson(a), rson(a)) in
+         rooting(q, rooting(r, t, u), rooting(p, v, w))
 ;;
 
 let a3 = bst_lbuild([6;8;7;12;10;3;5]);;
@@ -129,10 +133,10 @@ let rebalance(tree : 'a avl) : 'a avl =
       if wb = -2
       then
         if weight_balance(rson(tree)) = 1
-        then rg(tree)
+        then rdg(tree)
         else
           if weight_balance(rson(tree)) = -1
-          then rdg(tree)
+          then rg(tree)
           else tree
       else tree
 ;;
