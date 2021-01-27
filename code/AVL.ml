@@ -273,9 +273,6 @@ let cmpl(node_number, limit : int * int) : float * float * float =
 ;;
 
 cmpl(10000, 100000);;
-    
-
-(* Question 2 *)
 
 let a9 = avl_rnd_create(10000, 100000);;
 
@@ -293,3 +290,31 @@ let t = Sys.time() in
       (Sys.time() -. t);
     a11
 ;;
+    
+
+(* Question 2 *)
+
+(* Calcule la moyenne de déséquilibre de plusieurs avl avec des sous-suites ordonnées *)
+let average_weight_balance_sl(nb_sl, tree_number, limit, order, func : int * int * int * (int -> int) * (int * int * (int -> int) -> int list)) : float =
+  let rec sum(nb_sl, tree_number, limit, order, func) : int =
+    if tree_number = 0
+    then 0
+    else weight_balance(avl_lbuild(func(nb_sl, limit, order))) + sum(nb_sl, tree_number-1, limit, order, func)
+  in (float_of_int (sum(nb_sl, tree_number, limit, order, func))) /. (float_of_int tree_number)
+;;
+
+average_weight_balance_sl(5, 100, 100, (function x -> x * x), list_rnd_create_rnd_sl);;
+average_weight_balance_sl(5, 100, 100, (function x -> x * 2), list_rnd_create_rnd_sl);;
+average_weight_balance_sl(5, 100, 100, (function x -> x + 2), list_rnd_create_rnd_sl);;
+
+average_weight_balance_sl(5, 100, 100, (function x -> x * x), list_rnd_create_regular_sl);;
+average_weight_balance_sl(5, 100, 100, (function x -> x * 2), list_rnd_create_regular_sl);;
+average_weight_balance_sl(5, 100, 100, (function x -> x + 2), list_rnd_create_regular_sl);;
+
+average_weight_balance_sl(5, 100, 100, (function x -> x * x), list_rnd_create_inc_sl);;
+average_weight_balance_sl(5, 100, 100, (function x -> x * 2), list_rnd_create_inc_sl);;
+average_weight_balance_sl(5, 100, 100, (function x -> x + 2), list_rnd_create_inc_sl);;
+
+average_weight_balance_sl(5, 100, 100, (function x -> x * x), list_rnd_create_dec_sl);;
+average_weight_balance_sl(5, 100, 100, (function x -> x * 2), list_rnd_create_dec_sl);;
+average_weight_balance_sl(5, 100, 100, (function x -> x + 2), list_rnd_create_dec_sl);;
