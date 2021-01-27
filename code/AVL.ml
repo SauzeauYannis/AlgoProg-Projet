@@ -248,4 +248,31 @@ weight_balance(a7);;
 let a8 = avl_rnd_create(1000, 10000);;
 weight_balance(a8);;
 
+let rec test(num : int) : unit =
+  if num = 0
+  then ()
+  else
+    let wb = weight_balance(avl_rnd_create(1000, 10000)) in
+    if wb > 1 || wb < -1
+    then failwith ""
+    else test(num-1)
+;;
+
+test(100);;
+
+let cmpl(node_number, limit : int * int) : float * float * float =
+  let a = avl_rnd_create(node_number, limit) in
+  let t1 = Sys.time() in
+  let tmp = ajt_val(5000, a) in
+  let t2 = Sys.time() -. t1 in
+  let tmp2 = bst_seek(a, 5000) in
+  let t3 = Sys.time() -. t1 -. t2 in
+  let tmp3 = suppr_val(5000, a) in
+  let t4 = Sys.time() -. t1 -. t2 -. t3 in
+  (t2, t3, t4)
+;;
+
+cmpl(10000, 100000);;
+    
+
 (* Question 2 *)
