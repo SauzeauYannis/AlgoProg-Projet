@@ -64,10 +64,22 @@ show_int_btree(rg(rd(a1)));;
 
 (* Rotation gauche droite d'un arbre binaire *)
 let rgd(tree : 'a avl) : 'a avl =
+<<<<<<< HEAD
   if not(isEmpty(tree)) && not(isEmpty(lson(tree))) && not(isEmpty(lson(tree)))
   then let (q, s, w) = (root(tree), lson(tree), rson(tree)) in
        rd(rooting(q, rg(s), w))
   else failwith "rotation gauche droite"
+=======
+  if isEmpty(tree)
+  then empty()
+  else 
+    if isEmpty(lson(tree)) && isEmpty(lson(tree))
+    then tree
+    else let (r, s, w) = (root(tree), lson(tree), rson(tree)) in
+         let (p, t, a) = (root(s), lson(s), rson(s)) in
+         let (q, u, v) = (root(a), lson(a), rson(a)) in
+         rooting(q, rooting(p, t, u), rooting(r, v, w))
+>>>>>>> b1465f871958e01d4ebeaaf04d0c2684834cfcb5
 ;;
 
 let a2 = bst_lbuild([6;8;7;3;5;12;10]);;
@@ -76,10 +88,22 @@ show_int_btree(rgd(a2));;
 
 (* Rotation droite gauche d'un arbre binaire *)
 let rdg(tree : 'a avl) : 'a avl =
+<<<<<<< HEAD
   if not(isEmpty(tree)) && not(isEmpty(lson(tree))) && not(isEmpty(lson(tree)))
   then let (q, s, w) = (root(tree), lson(tree), rson(tree)) in
        rg(rooting(q, s, rd(w)))
   else failwith "rotation droite gauche"
+=======
+  if isEmpty(tree)
+  then empty()
+  else 
+    if isEmpty(lson(tree)) && isEmpty(lson(tree))
+    then tree
+    else let (r, t, s) = (root(tree), lson(tree), rson(tree)) in
+         let (p, a, w) = (root(s), lson(s), rson(s)) in
+         let (q, u, v) = (root(a), lson(a), rson(a)) in
+         rooting(q, rooting(r, t, u), rooting(p, v, w))
+>>>>>>> b1465f871958e01d4ebeaaf04d0c2684834cfcb5
 ;;
 
 let a3 = bst_lbuild([6;8;7;12;10;3;5]);;
@@ -116,11 +140,19 @@ let rebalance(tree : 'a avl) : 'a avl =
     else
       if wb = -2
       then
+<<<<<<< HEAD
         if weight_balance(rson(tree)) = -1
         then rg(tree)
         else
           if weight_balance(rson(tree)) = 1
           then rdg(tree)
+=======
+        if weight_balance(rson(tree)) = 1
+        then rdg(tree)
+        else
+          if weight_balance(rson(tree)) = -1
+          then rg(tree)
+>>>>>>> b1465f871958e01d4ebeaaf04d0c2684834cfcb5
           else tree
       else failwith "weight_balance(tree): value incorrect"
 ;;
