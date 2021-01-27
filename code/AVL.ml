@@ -24,9 +24,11 @@
 
 #load "btree.cmo";;
 #load "bst.cmo";;
+#load "ABR.cmo";;
 
 open Btree;;
 open Bst;;
+open ABR;;
 
 (*** 2 Arbres AVL ***)
 
@@ -100,7 +102,7 @@ show_int_btree(rdg(a3));;
 (* Question 2 *)
 
 (* Calcul du déséquilibre d'un arbre binaire de recherche *)
-let rec weight_balance(tree : 'a avl) : int =
+let weight_balance(tree : 'a avl) : int =
   let rec height(t : 'a avl) : int =
     if isEmpty(t) || (isEmpty(rson(t)) && isEmpty(lson(t)))
     then 0
@@ -140,13 +142,6 @@ let rec ajt_val(elem, tree : 'a * 'a avl) : 'a avl =
          if(elem > v)
          then rebalance(rooting(v, g, ajt_val(elem, d)))
          else rebalance(rooting(v, g, d))                           
-;;
-
-
-(* max d'un avl *)
-let avl_max(tree : 'a avl) : 'a =
-  match tree with
-  | Node(wb, bst) -> max_v(bst)
 ;;
 
 (* avl sans son max *)
@@ -217,8 +212,8 @@ show_int_btree(a5);;
 
 (* Question 4 *)
 
-Bst.bst_seek(a4, 10);;
-Bst.bst_seek(a5, 10);;
+bst_seek(a4, 10);;
+bst_seek(a5, 10);;
 
 (** 2.2 Implantaion d'un module Av1 **)
 
@@ -226,9 +221,8 @@ Bst.bst_seek(a5, 10);;
 
 (* Crée des arbres avl à partir d'une suite d'entiers*)
 let avl_rnd_create(node_number, limit : int * int) : 'a avl =
-  ABR.bst_rnd_create(node_number, limit)
+  bst_rnd_create(node_number, limit)
 ;;
 
 (* Question 2 *)
-
 
