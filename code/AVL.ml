@@ -21,7 +21,6 @@
 (* OCaml version 4.11.1 *)
 (* #directory "libraries/4.11.1/";; *)
 
-
 #load "btree.cmo";;
 #load "bst.cmo";;
 #load "ABR.cmo";;
@@ -219,10 +218,26 @@ bst_seek(a5, 10);;
 
 (* Question 1 *)
 
-(* Crée des arbres avl à partir d'une suite d'entiers*)
-let avl_rnd_create(node_number, limit : int * int) : 'a avl =
-  bst_rnd_create(node_number, limit)
+(* Construit un ABR à partir d'une liste d'élem avec des insertions aux feuilles *)
+let rec avl_lbuild(l : 'a list) : 'a avl =
+  match l with
+  | [] -> empty()
+  | v::lt -> ajt_val(v, bst_lbuild(lt))
 ;;
 
-(* Question 2 *)
+(* Crée des arbres avl à partir d'une suite d'entiers *)
+let avl_rnd_create(node_number, limit : int * int) : 'a avl =
+  Random.self_init();
+  let rec list_rnd_create(size, limit : int * int) : int list =
+    let rd : int = Random.int limit in
+    if size = 0
+    then []
+    else rd::list_rnd_create(size-1, limit)
+  in avl_lbuild(list_rnd_create(node_number, limit))
+;;
 
+let a6 = avl_rnd_create(10, 100);;
+show_int_btree(a6);;
+weight_balance(a6);;
+
+(* Question 2 *)

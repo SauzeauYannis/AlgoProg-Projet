@@ -21,7 +21,6 @@
 (* OCaml version 4.11.1 *)
 (* #directory "libraries/4.11.1/";; *)
 
-
 #load "btree.cmo";;
 #load "bst.cmo";;
 
