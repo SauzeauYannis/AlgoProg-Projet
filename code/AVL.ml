@@ -160,19 +160,10 @@ let rec suppr_val(elem, tree : 'a * 'a avl) : 'a avl =
           then rooting((wb-1, v), empty(), d)
           else rebalance(rooting(max_v(g), avl_dmax(g), d))
 ;;
-let a4 = ajt_val(4,ajt_val(5,ajt_val(2,ajt_val(3,ajt_val(12, empty())))))
-;;
-root_val(a4);;
-weight_balance(a4);;
-root_val(lson(a4));;
-root_val(rson(a4));;
-root_val(lson(rson(a4)));;
-root_val(rson(rson(a4)));;
-weight_balance(rson(a4));;
-weight_balance(lson(a4));;
-weight_balance(rson(a4));;
-weight_balance(lson(rson(a4)));;
-weight_balance(rson(rson(a4)));;
+
+(* *)
+let show_avl(tree : 'a avl) : unit = show((fun (wb, root) -> (string_of_int wb) ^ " " ^ (string_of_int root)), tree);;
+
 let a4 = ajt_val(10,
                  ajt_val(14,
                          ajt_val(11,
@@ -193,6 +184,8 @@ let a4 = ajt_val(10,
                    )
            )
 ;;
+show_avl(a4);;
+
 let a5 = suppr_val(4,
                    suppr_val(7,
                              suppr_val(9,
@@ -283,15 +276,15 @@ cmpl(10000, 100000);;
 let a9 = avl_rnd_create(10000, 100000);;
 
 let t = Sys.time() in
-    let a10 = ajt_val(9999, a9) in
+    let a10 = ajt_val(5000, a9) in
     Printf.printf "Execution time: %f secondsn\n"
       (Sys.time() -. t);
     let t = Sys.time() in
-    let res = avl_seek(a10, 9999) in
+    let res = avl_seek(a10, 5000) in
     Printf.printf "Execution time: %f secondsn\n"
       (Sys.time() -. t);
     let t = Sys.time() in
-    let a11 = suppr_val(9999, a10) in
+    let a11 = suppr_val(5000, a10) in
     Printf.printf "Execution time: %f secondsn\n"
       (Sys.time() -. t);
     a11
