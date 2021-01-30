@@ -40,8 +40,9 @@ type 'a avl = (int * 'a) bst;;
 
 (* Déséquilibre d'un arbre AVL *)
 let weight_balance(tree : 'a avl) : int =
-  let (wb, r) = root(tree) in
-  wb
+  if isEmpty(tree)
+  then 0
+  else let (wb, r) = root(tree) in wb
 ;;
 
 (* Valeur de la racine d'un arbre AVL *)
@@ -50,7 +51,7 @@ let root_val(tree : 'a avl) : int =
   r
 ;;
 
-(* Rotation gauche d'un arbre binaire *)
+(* Rotation gauche d'un AVL *)
 let rg(tree : 'a avl) : 'a avl =
   if not(isEmpty(tree)) && not(isEmpty(rson(tree)))
   then let (p, u, s) = (root_val(tree), lson(tree), rson(tree)) in
@@ -59,7 +60,7 @@ let rg(tree : 'a avl) : 'a avl =
   else failwith "rotation gauche"
 ;;
 
-(* Rotation droite d'un arbre binaire *)
+(* Rotation droite d'un AVL *)
 let rd(tree : 'a avl) : 'a avl =
   if not(isEmpty(tree)) && not(isEmpty(lson(tree)))
   then let (q, s, w) = (root_val(tree), lson(tree), rson(tree)) in
@@ -68,23 +69,19 @@ let rd(tree : 'a avl) : 'a avl =
   else failwith "rotation droite"
 ;;
 
-(* Rotation gauche droite d'un arbre binaire *)
+(* Rotation gauche droite d'un AVL *)
 let rgd(tree : 'a avl) : 'a avl =
   if not(isEmpty(tree)) && not(isEmpty(lson(tree))) && not(isEmpty(rson(lson(tree))))
-  then let (r, s, w) = (root_val(tree), lson(tree), rson(tree)) in
-       let (p, t, s2) = (root_val(s), lson(s), rson(s)) in
-       let (q, u, v) = (root(s2), lson(s2), rson(s2)) in
-       rooting(q, rooting((0, p), t, u), rooting((-weight_balance(s2), r), v, w))
+  then let (v, g, d) = (root(tree), lson(tree), rson(tree)) in
+       rd(rooting(v, rg(g), d))
   else failwith "rotation gauche droite"
 ;;
 
-(* Rotation droite gauche d'un arbre binaire *)
+(* Rotation droite gauche d'un AVL *)
 let rdg(tree : 'a avl) : 'a avl =
   if not(isEmpty(tree)) && not(isEmpty(rson(tree))) && not(isEmpty(lson(rson(tree))))
-  then let (r, t, s) = (root_val(tree), lson(tree), rson(tree)) in
-       let (p, s2, w) = (root_val(s), lson(s), rson(s)) in
-       let (q, u, v) = (root(s2), lson(s2), rson(s2)) in
-       rooting(q, rooting((0, r), t, u), rooting((-weight_balance(s), p), v, w))   
+  then let (v, g, d) = (root(tree), lson(tree), rson(tree)) in
+       rg(rooting(v, g, rd(d)))  
   else failwith "rotation droite gauche"
 ;;
 
@@ -92,64 +89,31 @@ let rdg(tree : 'a avl) : 'a avl =
 
 (* Rééquilibrage d'un arbre de recherche *)
 let rebalance(tree : 'a avl) : 'a avl =
-  let wb : int = weight_balance(tree) in
+  let ((wb, v), g, d) = (root(tree), lson(tree), rson(tree)) in
   if wb = 0 || wb = 1 || wb = -1
-  then
-    if not(isEmpty(lson(tree))) && not(isEmpty(rson(tree)))
-    then rooting((weight_balance(lson(tree)) - weight_balance(rson(tree)), root_val(tree)), lson(tree), rson(tree))
-    else tree
+  then tree
   else
-    let wbl : int = weight_balance(lson(tree)) in
+    let wbg : int = weight_balance(g) in
     if wb = 2
     then
-      if wbl = 1
-      then rd(tree)
+      if wbg = 1
+      then rd(tree) 
       else
-        if wbl = -1
-        then rgd(tree)
-        else rooting((wb-1, root_val(tree)), lson(tree), rson(tree))
+        if wbg = -1
+        then rgd(tree) 
+        else rooting((wb - 1, root_val(tree)), lson(tree), rson(tree))
     else
-      let wbr : int = weight_balance(rson(tree)) in
+      let wbd : int = weight_balance(rson(tree)) in
       if wb = -2
       then
-        if wbr = -1
-        then rg(tree)
+        if wbd = -1
+        then rg(tree) 
         else
-          if wbr = 1
-          then rdg(tree)
-          else rooting((wb+1, root_val(tree)), lson(tree), rson(tree))
-      else failwith "3. weight_balance(tree): value incorrect"
+          if wbd = 1
+          then rdg(tree) 
+          else rooting((wb + 1, root_val(tree)), lson(tree), rson(tree))
+      else failwith "weight_balance(tree) must be in {-2;-1;0;1;2}"
 ;;
-
-let rebalance(tree : 'a avl) : 'a avl =
-  let wb : int = weight_balance(tree) in
-  match wb with
-  | 0 -> tree
-  | 1 -> if(!isEmpty(lson(tree)) && !isEmpty(rson(tree)))
-         then
-           if weight_balance(lson(tree)) = 0 && weight_balance(rson(tree)) = 0
-           then rooting((0, root_val(tree)), lson(tree), rson(tree))
-           else tree
-         else tree
-  | -1 -> if(!isEmpty(lson(tree)) && !isEmpty(rson(tree)))
-          then 
-            if weight_balance(lson(tree)) = 0 && weight_balance(rson(tree)) = 0
-            then rooting((0, root_val(tree)), lson(tree), rson(tree))
-            else tree
-          else tree
-  | 2 ->  if weight_balance(lson(tree)) = 1
-          then rd(tree)
-          else
-            if weight_balance(lson(tree)) = -1
-            then rgd(tree)
-            else rooting((wb-1, root_val(tree)), lson(tree), rson(tree))
-  | -2 ->  if weight_balance(rson(tree)) = -1
-           then rg(tree)
-           else
-             if weight_balance(rson(tree)) = 1
-             then rdg(tree)
-             else rooting((wb+1, root_val(tree)), lson(tree), rson(tree))
-  | _ -> failwith "3. weight_balance(tree): value incorrect"
 
 (* Question 3 *)
 
@@ -157,16 +121,38 @@ let rebalance(tree : 'a avl) : 'a avl =
 let rec ajt_val(elem, tree : 'a * 'a avl) : 'a avl =
   if isEmpty(tree)
   then rooting((0, elem), empty(), empty())
-  else let (v, g, d) = (root_val(tree), lson(tree), rson(tree)) and
-           wb : int = weight_balance(tree) in
-       if elem < v
-       then rebalance(rooting((wb+1, v), ajt_val(elem, g), d))
-       else
-         if elem > v
-         then rebalance(rooting((wb-1, v), g, ajt_val(elem, d)))
-         else tree                          
+  else
+    let ((wb, v), g, d) = (root(tree), lson(tree), rson(tree)) in
+    if elem < v
+    then
+      let ng = ajt_val(elem, g) in
+      if isEmpty(g) && isEmpty(d)
+      then rooting((1, v), ng, empty())
+      else
+        if isEmpty(g)
+        then rooting((wb + 1, v), ng, d)
+        else
+          let (wbg, wbng) = (weight_balance(g), weight_balance(ng)) in
+          if wbg = 0 && wbng <> 0
+          then rebalance(rooting((wb + 1, v), ng, d))
+          else rooting((wb, v), ng, d)
+    else
+      if elem > v
+      then
+        let nd = ajt_val(elem, d) in
+        if isEmpty(g) && isEmpty(d)
+        then rooting((-1, v), empty(), nd)
+        else
+          if isEmpty(d)
+          then rooting((wb - 1, v), g, nd)
+          else
+            let (wbd, wbnd) = (weight_balance(d), weight_balance(nd)) in
+            if wbd = 0 && wbnd <> 0
+            then rebalance(rooting((wb - 1, v), g, nd))
+            else rooting((wb, v), g, nd)
+      else tree                          
 ;;
-
+(*
 (* avl sans son max *)
 let rec avl_dmax(tree : 'a avl) : 'a avl =
   if isEmpty(tree)
@@ -199,12 +185,11 @@ let rec suppr_val(elem, tree : 'a * 'a avl) : 'a avl =
           then rooting((wb-1, v), empty(), d)
           else rebalance(rooting(max_v(g), avl_dmax(g), d))
 ;;
-
+ *)
 (* Dessine un avl *)
 let show_avl(tree : 'a avl) : unit = show((fun (wb, root) -> (string_of_int wb) ^ " " ^ (string_of_int root)), tree);;
 
-let a4 = ajt_val(9,ajt_val(7,ajt_val(4,ajt_val(5,ajt_val(2,ajt_val(3,ajt_val(12, empty())))))))
-;;
+let a4 = ajt_val(9,ajt_val(7,ajt_val(4,ajt_val(5,ajt_val(2,ajt_val(3,ajt_val(12, empty())))))));;
 show_avl(a4);;
 let a4 = ajt_val(10,
                  ajt_val(14,
@@ -228,9 +213,6 @@ let a4 = ajt_val(10,
 ;;
 show_avl(a4);;
 weight_balance(a4);;
-
-let a54 = ajt_val(9, ajt_val(7, ajt_val(4, ajt_val(5, ajt_val(2, ajt_val(3, ajt_val(12, empty())))))));;
-show_avl(a54);;
 
 let a5 = suppr_val(4,
                    suppr_val(7,
@@ -292,11 +274,13 @@ let a6 = avl_rnd_create(10, 100);;
 weight_balance(a6);;
 show_avl(a6);;
 
-let a7 = avl_rnd_create(100, 1000);;
+let a7 = avl_rnd_create(20, 1000);;
 weight_balance(a7);;
+show_avl(a7);;
 
 let a8 = avl_rnd_create(1000, 10000);;
 weight_balance(a8);;
+show_avl(a8);;
 
 let rec test(num : int) : unit =
   if num = 0
