@@ -92,6 +92,8 @@ let rebalance(tree : 'a avl) : 'a avl =
   if wb = 0 || wb = 1 || wb = -1
   then tree
   else
+    if wb = 1 && weight_balance(lson(tree)) = 0 && weight_balance(rson(tree)) = 0
+    then rooting((wb-1, root_val(tree)), lson(tree), rson(tree))
     if wb = 2
     then
       if weight_balance(lson(tree)) = 1
@@ -111,6 +113,36 @@ let rebalance(tree : 'a avl) : 'a avl =
           else rooting((wb+1, root_val(tree)), lson(tree), rson(tree))
       else failwith "3. weight_balance(tree): value incorrect"
 ;;
+
+let rebalance(tree : 'a avl) : 'a avl =
+  let wb : int = weight_balance(tree) in
+  match wb with
+  | 0 -> tree
+  | 1 -> if(!isEmpty(lson(tree)) && !isEmpty(rson(tree)))
+         then
+           if weight_balance(lson(tree)) = 0 && weight_balance(rson(tree)) = 0
+           then rooting((0, root_val(tree)), lson(tree), rson(tree))
+           else tree
+         else tree
+  | -1 -> if(!isEmpty(lson(tree)) && !isEmpty(rson(tree)))
+          then 
+            if weight_balance(lson(tree)) = 0 && weight_balance(rson(tree)) = 0
+            then rooting((0, root_val(tree)), lson(tree), rson(tree))
+            else tree
+          else tree
+  | 2 ->  if weight_balance(lson(tree)) = 1
+          then rd(tree)
+          else
+            if weight_balance(lson(tree)) = -1
+            then rgd(tree)
+            else rooting((wb-1, root_val(tree)), lson(tree), rson(tree))
+  | -2 ->  if weight_balance(rson(tree)) = -1
+           then rg(tree)
+           else
+             if weight_balance(rson(tree)) = 1
+             then rdg(tree)
+             else rooting((wb+1, root_val(tree)), lson(tree), rson(tree))
+  | _ -> failwith "3. weight_balance(tree): value incorrect"
 
 (* Question 3 *)
 
@@ -185,6 +217,9 @@ let a4 = ajt_val(10,
            )
 ;;
 show_avl(a4);;
+
+let a54 = ajt_val(9, ajt_val(7, ajt_val(4, ajt_val(5, ajt_val(2, ajt_val(3, ajt_val(12, empty())))))));;
+show_avl(a54);;
 
 let a5 = suppr_val(4,
                    suppr_val(7,
