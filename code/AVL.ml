@@ -59,10 +59,6 @@ let rg(tree : 'a avl) : 'a avl =
   else failwith "rotation gauche"
 ;;
 
-let a1 = bst_lbuild([8;6;7;3;5]);;
-show_int_btree(a1);;
-show_int_btree(rg(a1));;
-
 (* Rotation droite d'un arbre binaire *)
 let rd(tree : 'a avl) : 'a avl =
   if not(isEmpty(tree)) && not(isEmpty(lson(tree)))
@@ -72,35 +68,21 @@ let rd(tree : 'a avl) : 'a avl =
   else failwith "rotation droite"
 ;;
 
-show_int_btree(rg(rd(a1)));;
-
 (* Rotation gauche droite d'un arbre binaire *)
 let rgd(tree : 'a bst) : 'a bst =
   if not(isEmpty(tree)) && not(isEmpty(lson(tree))) && not(isEmpty(rson(lson(tree))))
-  then let (r, s, w) = (root(tree), lson(tree), rson(tree)) in
-         let (p, t, a) = (root(s), lson(s), rson(s)) in
-         let (q, u, v) = (root(a), lson(a), rson(a)) in
-         rooting(q, rooting(p, t, u), rooting(r, v, w))
+  then let (r, g, d) = (root(tree), lson(tree), rson(tree)) in
+       rd(rooting(r, rg(g), d))
   else failwith "rotation gauche droite"
 ;;
-
-let a2 = bst_lbuild([6;8;7;3;5;12;10]);;
-show_int_btree(a2);;
-show_int_btree(rgd(a2));;
 
 (* Rotation droite gauche d'un arbre binaire *)
 let rdg(tree : 'a bst) : 'a bst =
   if not(isEmpty(tree)) && not(isEmpty(rson(tree))) && not(isEmpty(lson(rson(tree))))
-  then let (r, t, s) = (root(tree), lson(tree), rson(tree)) in
-         let (p, a, w) = (root(s), lson(s), rson(s)) in
-         let (q, u, v) = (root(a), lson(a), rson(a)) in
-         rooting(q, rooting(r, t, u), rooting(p, v, w))
+  then let (r, g, d) = (root(tree), lson(tree), rson(tree)) in
+       rg(rooting(r, g, rd(d)))    
   else failwith "rotation droite gauche"
 ;;
-
-let a3 = bst_lbuild([6;8;7;12;10;3;5]);;
-show_int_btree(a3);;
-show_int_btree(rdg(a3));;
 
 (* Question 2 *)
 
