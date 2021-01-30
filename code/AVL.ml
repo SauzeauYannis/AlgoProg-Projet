@@ -36,14 +36,26 @@ open ABR;;
 (* Question 1 *)
 
 (* Type de l'arbre AVL *)
-type 'a avl = 'a bst;;
+type 'a avl = (int * 'a) bst;;
+
+(* Déséquilibre d'un arbre AVL *)
+let weight_balance(tree : 'a avl) : int =
+  let (wb, r) = root(tree) in
+  wb
+;;
+
+(* Valeur de la racine d'un arbre AVL *)
+let root_val(tree : 'a avl) : int =
+  let (wb, r) = root(tree) in
+  r
+;;
 
 (* Rotation gauche d'un arbre binaire *)
 let rg(tree : 'a avl) : 'a avl =
   if not(isEmpty(tree)) && not(isEmpty(rson(tree)))
-  then let (p, u, s) = (root(tree), lson(tree), rson(tree)) in
+  then let (p, u, s) = (root_val(tree), lson(tree), rson(tree)) in
        let (q, v, w) = (root(s), lson(s), rson(s)) in
-       rooting(q, rooting(p, u, v), w)
+       rooting(q, rooting((0, p), u, v), w)
   else failwith "rotation gauche"
 ;;
 
@@ -54,16 +66,16 @@ show_int_btree(rg(a1));;
 (* Rotation droite d'un arbre binaire *)
 let rd(tree : 'a avl) : 'a avl =
   if not(isEmpty(tree)) && not(isEmpty(lson(tree)))
-  then let (q, s, w) = (root(tree), lson(tree), rson(tree)) in
+  then let (q, s, w) = (root_val(tree), lson(tree), rson(tree)) in
        let (p, u, v) = (root(s), lson(s), rson(s)) in
-       rooting(p, u, rooting(q, v, w))
+       rooting(p, u, rooting((0, q), v, w))
   else failwith "rotation droite"
 ;;
 
 show_int_btree(rg(rd(a1)));;
 
 (* Rotation gauche droite d'un arbre binaire *)
-let rgd(tree : 'a avl) : 'a avl =
+let rgd(tree : 'a bst) : 'a bst =
   if not(isEmpty(tree)) && not(isEmpty(lson(tree))) && not(isEmpty(rson(lson(tree))))
   then let (r, s, w) = (root(tree), lson(tree), rson(tree)) in
          let (p, t, a) = (root(s), lson(s), rson(s)) in
@@ -77,7 +89,7 @@ show_int_btree(a2);;
 show_int_btree(rgd(a2));;
 
 (* Rotation droite gauche d'un arbre binaire *)
-let rdg(tree : 'a avl) : 'a avl =
+let rdg(tree : 'a bst) : 'a bst =
   if not(isEmpty(tree)) && not(isEmpty(rson(tree))) && not(isEmpty(lson(rson(tree))))
   then let (r, t, s) = (root(tree), lson(tree), rson(tree)) in
          let (p, a, w) = (root(s), lson(s), rson(s)) in
@@ -92,17 +104,6 @@ show_int_btree(rdg(a3));;
 
 (* Question 2 *)
 
-(* Calcul du déséquilibre d'un arbre binaire de recherche *)
-let weight_balance(tree : 'a avl) : int =
-  let rec height(t : 'a avl) : int =
-    if isEmpty(t) || (isEmpty(rson(t)) && isEmpty(lson(t)))
-    then 0
-    else 1 + max (height(rson(t))) (height(lson(t)))
-  in if isEmpty(tree)
-     then 0
-     else height(lson(tree)) - height(rson(tree))
-;;
-
 (* Rééquilibrage d'un arbre de recherche *)
 let rebalance(tree : 'a avl) : 'a avl =
   let wb : int = weight_balance(tree) in
@@ -116,7 +117,7 @@ let rebalance(tree : 'a avl) : 'a avl =
       else
         if weight_balance(lson(tree)) = -1
         then rgd(tree)
-        else tree
+        else failwith "1. weight_balance(tree): value incorrect"
     else
       if wb = -2
       then
@@ -125,23 +126,24 @@ let rebalance(tree : 'a avl) : 'a avl =
         else
           if weight_balance(rson(tree)) = 1
           then rdg(tree)
-          else tree
-      else failwith "weight_balance(tree): value incorrect"
+          else failwith "2. weight_balance(tree): value incorrect"
+      else failwith "3. weight_balance(tree): value incorrect"
 ;;
 
 (* Question 3 *)
 
 (* ajout d'un noeud dans un AVL *)
 let rec ajt_val(elem, tree : 'a * 'a avl) : 'a avl =
-  if(isEmpty(tree))
-  then rooting(elem, empty(), empty())
-  else let (v, g, d) = (root(tree), lson(tree), rson(tree)) in
-       if(elem < v)
-       then rebalance(rooting(v, ajt_val(elem, g), d))
+  if isEmpty(tree)
+  then rooting((0, elem), empty(), empty())
+  else let (v, g, d) = (root_val(tree), lson(tree), rson(tree)) and
+           wb : int = weight_balance(tree) in
+       if elem < v
+       then rebalance(rooting((wb+1, v), ajt_val(elem, g), d))
        else
-         if(elem > v)
-         then rebalance(rooting(v, g, ajt_val(elem, d)))
-         else rebalance(rooting(v, g, d))                           
+         if elem > v
+         then rebalance(rooting((wb-1, v), g, ajt_val(elem, d)))
+         else tree                          
 ;;
 
 (* avl sans son max *)
@@ -149,10 +151,11 @@ let rec avl_dmax(tree : 'a avl) : 'a avl =
   if isEmpty(tree)
   then invalid_arg "max : tree must not be empty"
   else
-    let (v, g, d) = (root(tree), lson(tree), rson(tree)) in
+    let (v, g, d) = (root_val(tree), lson(tree), rson(tree)) and
+        wb : int = weight_balance(tree) in
     if isEmpty(d)
-    then g
-    else rebalance(rooting(v, g,  avl_dmax(d)))
+    then rooting((wb+1, v), g, empty())
+    else rebalance(rooting((wb, v), g,  avl_dmax(d)))
 ;;
 
 (* ajout d'un noeud dans un AVL *)
@@ -160,18 +163,19 @@ let rec suppr_val(elem, tree : 'a * 'a avl) : 'a avl =
   if isEmpty(tree)
   then empty()
   else
-    let (v, g, d) = (root(tree), lson(tree), rson(tree)) in
+    let (v, g, d) = (root_val(tree), lson(tree), rson(tree)) and
+        wb : int = weight_balance(tree) in
     if elem < v
-    then rebalance(rooting(v, suppr_val(elem, g), d))
+    then rebalance(rooting((wb, v), suppr_val(elem, g), d))
     else
       if elem > v
-      then rebalance(rooting(v, g, suppr_val(elem, d)))
+      then rebalance(rooting((wb, v), g, suppr_val(elem, d)))
       else
         if isEmpty(g) && isEmpty(d)
-        then g
+        then rooting((wb+1, v), g, empty())
         else
           if not(isEmpty(d))
-          then d
+          then rooting((wb-1, v), empty(), d)
           else rebalance(rooting(max_v(g), avl_dmax(g), d))
 ;;
 
@@ -195,7 +199,6 @@ let a4 = ajt_val(10,
                    )
            )
 ;;
-show_int_btree(a4);;
 let a5 = suppr_val(4,
                    suppr_val(7,
                              suppr_val(9,
@@ -208,12 +211,26 @@ let a5 = suppr_val(4,
                      )
            )
 ;;
-show_int_btree(a5);;
 
 (* Question 4 *)
 
-bst_seek(a4, 10);;
-bst_seek(a5, 10);;
+let rec avl_seek(t, e : 'a avl * 'a) : bool =
+  if isEmpty(t)
+  then false
+  else
+    if e < root_val(t)
+    then avl_seek(lson(t), e)
+    else
+      if e > root_val(t)
+      then avl_seek(rson(t), e)
+      else true
+;;
+
+let show_avl_tree(t : 'a avl) =
+  
+
+avl_seek(a4, 10);;
+avl_seek(a5, 10);;
 
 (** 2.2 Implantaion d'un module Av1 **)
 
@@ -237,12 +254,10 @@ let avl_rnd_create(node_number, limit : int * int) : 'a avl =
   in avl_lbuild(list_rnd_create(node_number, limit))
 ;;
 
-let a6 = avl_rnd_create(10, 100);;
-show_int_btree(a6);;
+let a6 = avl_rnd_create(11, 100);;
 weight_balance(a6);;
 
 let a7 = avl_rnd_create(100, 1000);;
-show_int_btree(a7);;
 weight_balance(a7);;
 
 let a8 = avl_rnd_create(1000, 10000);;
@@ -265,7 +280,7 @@ let cmpl(node_number, limit : int * int) : float * float * float =
   let t1 = Sys.time() in
   let tmp = ajt_val(5000, a) in
   let t2 = Sys.time() -. t1 in
-  let tmp2 = bst_seek(a, 5000) in
+  let tmp2 = avl_seek(a, 5000) in
   let t3 = Sys.time() -. t1 -. t2 in
   let tmp3 = suppr_val(5000, a) in
   let t4 = Sys.time() -. t1 -. t2 -. t3 in
@@ -281,7 +296,7 @@ let t = Sys.time() in
     Printf.printf "Execution time: %f secondsn\n"
       (Sys.time() -. t);
     let t = Sys.time() in
-    let res = bst_seek(a10, 9999) in
+    let res = avl_seek(a10, 9999) in
     Printf.printf "Execution time: %f secondsn\n"
       (Sys.time() -. t);
     let t = Sys.time() in
