@@ -65,30 +65,48 @@ let rd(tree : 'a avl) : 'a avl =
   if not(isEmpty(tree)) && not(isEmpty(lson(tree)))
   then let (q, s, w) = (root_val(tree), lson(tree), rson(tree)) in
        let (p, u, v) = (root_val(s), lson(s), rson(s)) in
-       rooting((0, p), u, rooting((0, q), v, w))
+       rooting(((0, p), u, rooting((0, q), v, w)))
   else failwith "rotation droite"
 ;;
 
 (* Rotation gauche droite d'un AVL *)
 let rgd(tree : 'a avl) : 'a avl =
   if not(isEmpty(tree)) && not(isEmpty(lson(tree))) && not(isEmpty(rson(lson(tree))))
-  then let (v, g, d) = (root(tree), lson(tree), rson(tree)) in
-       rd(rooting(v, rg(g), d))
+  then let (r, s, w) = (root_val(tree), lson(tree), rson(tree)) in
+       let (p, t, s2) = (root_val(s), lson(s), rson(s)) in
+       let ((wbq, q), u, v) = (root(s2), lson(s2), rson(s2)) in
+       let (nwbr, nwbp) =
+         if wbq = 0
+         then (0, 0)
+         else
+           if wbq > 0
+           then (-1, 0)
+           else (0, 1)
+       in rooting((0, q), rooting((nwbp, p), t, u), rooting((nwbr, r), v, w))
   else failwith "rotation gauche droite"
 ;;
 
 (* Rotation droite gauche d'un AVL *)
 let rdg(tree : 'a avl) : 'a avl =
   if not(isEmpty(tree)) && not(isEmpty(rson(tree))) && not(isEmpty(lson(rson(tree))))
-  then let (v, g, d) = (root(tree), lson(tree), rson(tree)) in
-       rg(rooting(v, g, rd(d)))  
+  then let (r, t, s) = (root_val(tree), lson(tree), rson(tree)) in
+       let (p, s2, w) = (root_val(s), lson(s), rson(s)) in
+       let ((wbq, q), u, v) = (root(s2), lson(s2), rson(s2)) in
+       let (nwbr, nwbp) =
+         if wbq = 0
+         then (0, 0)
+         else
+           if wbq > 0
+           then (0, -1)
+           else (1, 0)
+       in rooting((0, q), rooting((nwbr, r), t, u), rooting(((nwbp, p), v, w)))
   else failwith "rotation droite gauche"
 ;;
 
 (* Question 2 *)
 
 (* Rééquilibrage d'un arbre de recherche *)
-let rebalance(tree : 'a avl) : 'a avl =
+let rec rebalance(tree : 'a avl) : 'a avl =
   let ((wb, v), g, d) = (root(tree), lson(tree), rson(tree)) in
   if wb = 0 || wb = 1 || wb = -1
   then tree
@@ -101,17 +119,17 @@ let rebalance(tree : 'a avl) : 'a avl =
       else
         if wbg = -1
         then rgd(tree) 
-        else rooting((wb - 1, root_val(tree)), lson(tree), rson(tree))
+        else rooting((wb - 1, v), g, d)
     else
       let wbd : int = weight_balance(rson(tree)) in
       if wb = -2
       then
         if wbd = -1
-        then rg(tree) 
+        then rg(tree)
         else
           if wbd = 1
-          then rdg(tree) 
-          else rooting((wb + 1, root_val(tree)), lson(tree), rson(tree))
+          then rdg(tree)
+          else rooting((wb + 1, v), g, d)
       else failwith "weight_balance(tree) must be in {-2;-1;0;1;2}"
 ;;
 
@@ -152,17 +170,17 @@ let rec ajt_val(elem, tree : 'a * 'a avl) : 'a avl =
             else rooting((wb, v), g, nd)
       else tree                          
 ;;
-(*
+
+
 (* avl sans son max *)
 let rec avl_dmax(tree : 'a avl) : 'a avl =
   if isEmpty(tree)
   then invalid_arg "max : tree must not be empty"
   else
-    let (v, g, d) = (root_val(tree), lson(tree), rson(tree)) and
-        wb : int = weight_balance(tree) in
+    let ((wb, v), g, d) = (root(tree), lson(tree), rson(tree)) in
     if isEmpty(d)
-    then rooting((wb+1, v), g, empty())
-    else rebalance(rooting((wb, v), g,  avl_dmax(d)))
+    then g
+    else rebalance(rooting((wb+1, v), g,  avl_dmax(d)))
 ;;
 
 (* ajout d'un noeud dans un AVL *)
@@ -179,52 +197,20 @@ let rec suppr_val(elem, tree : 'a * 'a avl) : 'a avl =
       then rebalance(rooting((wb, v), g, suppr_val(elem, d)))
       else
         if isEmpty(g) && isEmpty(d)
-        then rooting((wb+1, v), g, empty())
+        then g
         else
           if not(isEmpty(d))
-          then rooting((wb-1, v), empty(), d)
+          then d
           else rebalance(rooting(max_v(g), avl_dmax(g), d))
 ;;
- *)
+
 (* Dessine un avl *)
 let show_avl(tree : 'a avl) : unit = show((fun (wb, root) -> (string_of_int wb) ^ " " ^ (string_of_int root)), tree);;
 
-let a4 = ajt_val(9,ajt_val(7,ajt_val(4,ajt_val(5,ajt_val(2,ajt_val(3,ajt_val(12, empty())))))));;
+let a4 = ajt_val(25,ajt_val(22,ajt_val(15,ajt_val(17,ajt_val(13,ajt_val(8,ajt_val(6,ajt_val(1,ajt_val(10,ajt_val(14,ajt_val(11,ajt_val(9,ajt_val(7,ajt_val(4,ajt_val(5,ajt_val(2,ajt_val(3,ajt_val(12, empty()))))))))))))))))));;
 show_avl(a4);;
-let a4 = ajt_val(10,
-                 ajt_val(14,
-                         ajt_val(11,
-                                 ajt_val(9,
-                                         ajt_val(7,
-                                                 ajt_val(4,
-                                                         ajt_val(5,
-                                                                 ajt_val(2,
-                                                                         ajt_val(3,
-                                                                                 ajt_val(12, empty())
-                                                                           )
-                                                                   )
-                                                           )
-                                                   )
-                                           )
-                                   )
-                           )
-                   )
-           )
-;;
-show_avl(a4);;
-weight_balance(a4);;
 
-let a5 = suppr_val(4,
-                   suppr_val(7,
-                             suppr_val(9,
-                                       suppr_val(11,
-                                                 suppr_val(10,
-                                                           suppr_val(14,a4)
-                                                   )
-                                         )
-                               )
-                     )
-           )
+let a5 = suppr_val(9,suppr_val(10,suppr_val(5,suppr_val(14,a4))))
 ;;
 show_avl(a5);;
 
@@ -257,7 +243,7 @@ let rec avl_lbuild(l : 'a list) : 'a avl =
 ;;
 
 show_avl(avl_lbuild([10;14;11;9;7;4;5;3;2;12]));;
-show_avl(avl_lbuild([1;2;3;4;5;6;7;8;9]));;
+show_avl(avl_lbuild([8;14;12;6;5;10]));;
 
 (* Crée des arbres avl à partir d'une suite d'entiers *)
 let avl_rnd_create(node_number, limit : int * int) : 'a avl =
@@ -274,13 +260,12 @@ let a6 = avl_rnd_create(10, 100);;
 weight_balance(a6);;
 show_avl(a6);;
 
-let a7 = avl_rnd_create(20, 1000);;
+let a7 = avl_rnd_create(50, 1000);;
 weight_balance(a7);;
 show_avl(a7);;
 
 let a8 = avl_rnd_create(1000, 10000);;
 weight_balance(a8);;
-show_avl(a8);;
 
 let rec test(num : int) : unit =
   if num = 0
