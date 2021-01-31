@@ -178,7 +178,7 @@ let rec avl_max(tree : 'a avl) : 'a =
   else
     let ((wb, v), g, d) = (root(tree), lson(tree), rson(tree)) in
     if isEmpty(d)
-    then (wb, v)
+    then v
     else avl_max(d)
 ;;
 
@@ -194,6 +194,14 @@ let rec avl_dmax(tree : 'a avl) : 'a avl =
     else rebalance(rooting((wb+1, v), g,  avl_dmax(d)))
 ;;
 
+(* valeur abs *)
+let abs(a: int) : int =
+  if a < 0
+  then -a
+  else a
+;;
+abs(0);;
+
 (* suppression d'un noeud dans un AVL *)
 let rec suppr_val(elem, tree : 'a * 'a avl) : 'a avl =
   if isEmpty(tree)
@@ -202,17 +210,23 @@ let rec suppr_val(elem, tree : 'a * 'a avl) : 'a avl =
     let (v, g, d) = (root_val(tree), lson(tree), rson(tree)) and
         wb : int = weight_balance(tree) in
     if elem < v
-    then rebalance(rooting((wb, v), suppr_val(elem, g), d))
+    then 
+      let sg = suppr_val(elem, g) in
+      rebalance(rooting((wb, v), sg, d))
     else
       if elem > v
-      then rebalance(rooting((wb, v), g, suppr_val(elem, d)))
+      then 
+        let sd = suppr_val(elem, d) in
+        rebalance(rooting((wb, v), g, sd))
       else
         if isEmpty(d)
         then g
         else
           if isEmpty(g)
           then d
-          else rebalance(rooting(avl_max(g), avl_dmax(g), d))
+          else let wb_g = weight_balance(g) in (* c'est pas ça *)
+               let newb = wb - wb_g in
+               rebalance(rooting((newb, avl_max(g)), avl_dmax(g), d))
 ;;
 
 (* Dessine un avl *)
@@ -223,7 +237,7 @@ avl_max(a4);;
 show_avl(avl_dmax(a4));;
 show_avl(a4);;
 
-let a5 = suppr_val(12,suppr_val(10, suppr_val(11, suppr_val(5, a4))));;
+let a5 = suppr_val(7, suppr_val(11,suppr_val(5, a4)));;
 show_avl(a5);;
 
 (* Question 4 *)
