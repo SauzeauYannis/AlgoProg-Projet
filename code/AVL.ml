@@ -171,11 +171,22 @@ let rec ajt_val(elem, tree : 'a * 'a avl) : 'a avl =
       else tree                          
 ;;
 
+(* max d'un avl *)
+let rec avl_max(tree : 'a avl) : 'a =
+  if isEmpty(tree)
+  then invalid_arg "avl_max : tree must not be empty"
+  else
+    let ((wb, v), g, d) = (root(tree), lson(tree), rson(tree)) in
+    if isEmpty(d)
+    then (wb, v)
+    else avl_max(d)
+;;
+
 
 (* avl sans son max *)
 let rec avl_dmax(tree : 'a avl) : 'a avl =
   if isEmpty(tree)
-  then invalid_arg "max : tree must not be empty"
+  then invalid_arg "avl_dmax : tree must not be empty"
   else
     let ((wb, v), g, d) = (root(tree), lson(tree), rson(tree)) in
     if isEmpty(d)
@@ -183,7 +194,7 @@ let rec avl_dmax(tree : 'a avl) : 'a avl =
     else rebalance(rooting((wb+1, v), g,  avl_dmax(d)))
 ;;
 
-(* ajout d'un noeud dans un AVL *)
+(* suppression d'un noeud dans un AVL *)
 let rec suppr_val(elem, tree : 'a * 'a avl) : 'a avl =
   if isEmpty(tree)
   then empty()
@@ -196,22 +207,23 @@ let rec suppr_val(elem, tree : 'a * 'a avl) : 'a avl =
       if elem > v
       then rebalance(rooting((wb, v), g, suppr_val(elem, d)))
       else
-        if isEmpty(g) && isEmpty(d)
+        if isEmpty(d)
         then g
         else
-          if not(isEmpty(d))
+          if isEmpty(g)
           then d
-          else rebalance(rooting(max_v(g), avl_dmax(g), d))
+          else rebalance(rooting(avl_max(g), avl_dmax(g), d))
 ;;
 
 (* Dessine un avl *)
 let show_avl(tree : 'a avl) : unit = show((fun (wb, root) -> (string_of_int wb) ^ " " ^ (string_of_int root)), tree);;
 
-let a4 = ajt_val(25,ajt_val(22,ajt_val(15,ajt_val(17,ajt_val(13,ajt_val(8,ajt_val(6,ajt_val(1,ajt_val(10,ajt_val(14,ajt_val(11,ajt_val(9,ajt_val(7,ajt_val(4,ajt_val(5,ajt_val(2,ajt_val(3,ajt_val(12, empty()))))))))))))))))));;
+let a4 = ajt_val(10,ajt_val(14,ajt_val(11,ajt_val(9,ajt_val(7,ajt_val(4,ajt_val(5,ajt_val(2,ajt_val(3,ajt_val(12, empty()))))))))));;
+avl_max(a4);;
+show_avl(avl_dmax(a4));;
 show_avl(a4);;
 
-let a5 = suppr_val(9,suppr_val(10,suppr_val(5,suppr_val(14,a4))))
-;;
+let a5 = suppr_val(12,suppr_val(10, suppr_val(11, suppr_val(5, a4))));;
 show_avl(a5);;
 
 (* Question 4 *)
