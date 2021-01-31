@@ -119,7 +119,7 @@ let rec rebalance(tree : 'a avl) : 'a avl =
       else
         if wbg = -1
         then rgd(tree) 
-        else rooting((wb - 1, v), g, d)
+        else rooting((wb - 1, v), g, d) (* faire un rgd(tree) pour le cas où g à des enfants*)
     else
       let wbd : int = weight_balance(rson(tree)) in
       if wb = -2
@@ -129,7 +129,7 @@ let rec rebalance(tree : 'a avl) : 'a avl =
         else
           if wbd = 1
           then rdg(tree)
-          else rooting((wb + 1, v), g, d)
+          else rooting((wb + 1, v), g, d)  (* faire un rdg(tree) pour le cas où d à des enfants*)
       else failwith "weight_balance(tree) must be in {-2;-1;0;1;2}"
 ;;
 
@@ -237,7 +237,7 @@ avl_max(a4);;
 show_avl(avl_dmax(a4));;
 show_avl(a4);;
 
-let a5 = suppr_val(7, suppr_val(11,suppr_val(5, a4)));;
+let a5 =suppr_val(11,suppr_val(5, a4));;
 show_avl(a5);;
 
 (* Question 4 *)
