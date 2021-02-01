@@ -58,7 +58,7 @@ let rg(tree : 'a avl) : 'a avl =
        let ((wbq, q), v, w) = (root(s), lson(s), rson(s)) in
        let (nwbp, nwbq) =
          if wbq = 0
-         then (-1, 1)
+         then (0, 1)
          else (0, 0) in
        rooting((nwbq, q), rooting((nwbp, p), u, v), w)
   else failwith "rotation gauche"
@@ -71,7 +71,7 @@ let rd(tree : 'a avl) : 'a avl =
        let ((wbp, p), u, v) = (root(s), lson(s), rson(s)) in
        let (nwbq, nwbp) =
          if wbp = 0
-         then (1, -1)
+         then (1, 0)
          else (0, 0) in
        rooting(((nwbp, p), u, rooting((nwbq, q), v, w)))
   else failwith "rotation droite"
@@ -194,7 +194,6 @@ let rec avl_dmax(tree : 'a avl) : 'a avl =
 
 (* suppression d'un noeud dans un AVL *)
 let rec suppr_val(elem, tree : 'a * 'a avl) : 'a avl =
-  show_avl(tree);
   if isEmpty(tree)
   then empty()
   else
@@ -231,6 +230,12 @@ show_avl(a5);;
 
 let a6 = suppr_val(12,suppr_val(3,suppr_val(2,suppr_val(2,suppr_val(5,suppr_val(4,suppr_val(7,suppr_val(9,suppr_val(11,suppr_val(14,suppr_val(10, a4)))))))))));;
 show_avl(a6);;
+
+let a6 = suppr_val(12,suppr_val(3,suppr_val(2,suppr_val(2,suppr_val(5,suppr_val(4,suppr_val(7,suppr_val(9,suppr_val(11,suppr_val(14,suppr_val(10, a4)))))))))));;
+show_avl(a6);;
+
+let a7 = suppr_val(5, a4);;
+show_avl(a7);;
 
 (* Question 4 *)
 
