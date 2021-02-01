@@ -54,18 +54,26 @@ let root_val(tree : 'a avl) : int =
 (* Rotation gauche d'un AVL *)
 let rg(tree : 'a avl) : 'a avl =
   if not(isEmpty(tree)) && not(isEmpty(rson(tree)))
-  then let (p, u, s) = (root_val(tree), lson(tree), rson(tree)) in
-       let (q, v, w) = (root_val(s), lson(s), rson(s)) in
-       rooting((0, q), rooting((0, p), u, v), w)
+  then let ((wbp, p), u, s) = (root(tree), lson(tree), rson(tree)) in
+       let ((wbq, q), v, w) = (root(s), lson(s), rson(s)) in
+       let (nwbp, nwbq) =
+         if wbq = 0
+         then (-1, 1)
+         else (0, 0) in
+       rooting((nwbq, q), rooting((nwbp, p), u, v), w)
   else failwith "rotation gauche"
 ;;
 
 (* Rotation droite d'un AVL *)
 let rd(tree : 'a avl) : 'a avl =
   if not(isEmpty(tree)) && not(isEmpty(lson(tree)))
-  then let (q, s, w) = (root_val(tree), lson(tree), rson(tree)) in
-       let (p, u, v) = (root_val(s), lson(s), rson(s)) in
-       rooting(((0, p), u, rooting((0, q), v, w)))
+  then let ((wbq, q), s, w) = (root(tree), lson(tree), rson(tree)) in
+       let ((wbp, p), u, v) = (root(s), lson(s), rson(s)) in
+       let (nwbq, nwbp) =
+         if wbp = 0
+         then (1, -1)
+         else (0, 0) in
+       rooting(((nwbp, p), u, rooting((nwbq, q), v, w)))
   else failwith "rotation droite"
 ;;
 
@@ -114,22 +122,22 @@ let rec rebalance(tree : 'a avl) : 'a avl =
     let wbg : int = weight_balance(g) in
     if wb = 2
     then
-      if wbg = 1
+      if wbg = 1 || wbg = 0
       then rd(tree) 
       else
         if wbg = -1
         then rgd(tree) 
-        else rooting((wb - 1, v), g, d) (* faire un rgd(tree) pour le cas où g à des enfants*)
+        else failwith "1."
     else
       let wbd : int = weight_balance(rson(tree)) in
       if wb = -2
       then
-        if wbd = -1
+        if wbd = -1 || wbd = 0
         then rg(tree)
         else
           if wbd = 1
           then rdg(tree)
-          else rooting((wb + 1, v), g, d)  (* faire un rdg(tree) pour le cas où d à des enfants*)
+          else failwith "2."
       else failwith "weight_balance(tree) must be in {-2;-1;0;1;2}"
 ;;
 
@@ -144,30 +152,18 @@ let rec ajt_val(elem, tree : 'a * 'a avl) : 'a avl =
     if elem < v
     then
       let ng = ajt_val(elem, g) in
-      if isEmpty(g) && isEmpty(d)
-      then rooting((1, v), ng, empty())
-      else
-        if isEmpty(g)
-        then rooting((wb + 1, v), ng, d)
-        else
-          let (wbg, wbng) = (weight_balance(g), weight_balance(ng)) in
-          if wbg = 0 && wbng <> 0
-          then rebalance(rooting((wb + 1, v), ng, d))
-          else rooting((wb, v), ng, d)
+      let (wbg, wbng) = (weight_balance(g), weight_balance(ng)) in
+      if isEmpty(g) || (wbg = 0 && wbng <> 0)
+      then rebalance(rooting((wb + 1, v), ng, d))
+      else rooting((wb, v), ng, d)
     else
       if elem > v
       then
         let nd = ajt_val(elem, d) in
-        if isEmpty(g) && isEmpty(d)
-        then rooting((-1, v), empty(), nd)
-        else
-          if isEmpty(d)
-          then rooting((wb - 1, v), g, nd)
-          else
-            let (wbd, wbnd) = (weight_balance(d), weight_balance(nd)) in
-            if wbd = 0 && wbnd <> 0
-            then rebalance(rooting((wb - 1, v), g, nd))
-            else rooting((wb, v), g, nd)
+        let (wbd, wbnd) = (weight_balance(d), weight_balance(nd)) in
+        if isEmpty(d) || (wbd = 0 && wbnd <> 0)
+        then rebalance(rooting((wb - 1, v), g, nd))
+        else rooting((wb, v), g, nd)
       else tree                          
 ;;
 
@@ -182,7 +178,6 @@ let rec avl_max(tree : 'a avl) : 'a =
     else avl_max(d)
 ;;
 
-
 (* avl sans son max *)
 let rec avl_dmax(tree : 'a avl) : 'a avl =
   if isEmpty(tree)
@@ -191,54 +186,51 @@ let rec avl_dmax(tree : 'a avl) : 'a avl =
     let ((wb, v), g, d) = (root(tree), lson(tree), rson(tree)) in
     if isEmpty(d)
     then g
-    else rebalance(rooting((wb+1, v), g,  avl_dmax(d)))
+    else
+      if (weight_balance(d) = 0 || weight_balance(d) = 1) && not(isEmpty(rson(d)))
+      then rooting((wb, v), g, avl_dmax(d))
+      else rebalance(rooting((wb + 1, v), g, avl_dmax(d)))
 ;;
-
-(* valeur abs *)
-let abs(a: int) : int =
-  if a < 0
-  then -a
-  else a
-;;
-abs(0);;
 
 (* suppression d'un noeud dans un AVL *)
 let rec suppr_val(elem, tree : 'a * 'a avl) : 'a avl =
+  show_avl(tree);
   if isEmpty(tree)
   then empty()
   else
-    let (v, g, d) = (root_val(tree), lson(tree), rson(tree)) and
-        wb : int = weight_balance(tree) in
+    let ((wb, v), g, d) = (root(tree), lson(tree), rson(tree)) in
     if elem < v
-    then 
-      let sg = suppr_val(elem, g) in
-      rebalance(rooting((wb, v), sg, d))
+    then
+      if weight_balance(g) = 0 && not(isEmpty(g)) && not(isEmpty(lson(g)))
+      then rooting((wb, v), suppr_val(elem, g), d)
+      else rebalance(rooting((wb - 1, v), suppr_val(elem, g), d))
     else
       if elem > v
-      then 
-        let sd = suppr_val(elem, d) in
-        rebalance(rooting((wb, v), g, sd))
+      then
+        if weight_balance(d) = 0 && not(isEmpty(d)) && not(isEmpty(rson(d)))
+        then rooting((wb, v), g, suppr_val(elem, d))
+        else rebalance(rooting((wb + 1, v), g, suppr_val(elem, d)))
       else
         if isEmpty(d)
         then g
         else
           if isEmpty(g)
           then d
-          else let wb_g = weight_balance(g) in (* c'est pas ça *)
-               let newb = wb - wb_g in
-               rebalance(rooting((newb, avl_max(g)), avl_dmax(g), d))
+          else rebalance(rooting((wb - 1, avl_max(g)), avl_dmax(g), d))
 ;;
 
 (* Dessine un avl *)
 let show_avl(tree : 'a avl) : unit = show((fun (wb, root) -> (string_of_int wb) ^ " " ^ (string_of_int root)), tree);;
 
 let a4 = ajt_val(10,ajt_val(14,ajt_val(11,ajt_val(9,ajt_val(7,ajt_val(4,ajt_val(5,ajt_val(2,ajt_val(3,ajt_val(12, empty()))))))))));;
-avl_max(a4);;
-show_avl(avl_dmax(a4));;
 show_avl(a4);;
+avl_max(a4);;
 
-let a5 =suppr_val(11,suppr_val(5, a4));;
+let a5 = avl_dmax(avl_dmax(avl_dmax(avl_dmax(avl_dmax(avl_dmax(avl_dmax(avl_dmax(avl_dmax(avl_dmax(a4))))))))));;
 show_avl(a5);;
+
+let a6 = suppr_val(12,suppr_val(3,suppr_val(2,suppr_val(2,suppr_val(5,suppr_val(4,suppr_val(7,suppr_val(9,suppr_val(11,suppr_val(14,suppr_val(10, a4)))))))))));;
+show_avl(a6);;
 
 (* Question 4 *)
 
