@@ -31,7 +31,7 @@ open ABR;;
 
 (*** 2 Arbres AVL ***)
 
-(** 2.1 Implantaion d'un module Av1 **)
+(** 2.1 Implantaion d'un module AvL **)
 
 (* Question 1 *)
 
@@ -113,7 +113,7 @@ let rdg(tree : 'a avl) : 'a avl =
 
 (* Question 2 *)
 
-(* Rééquilibrage d'un arbre de recherche *)
+(* Rééquilibrage d'un avl *)
 let rec rebalance(tree : 'a avl) : 'a avl =
   let ((wb, v), g, d) = (root(tree), lson(tree), rson(tree)) in
   if wb = 0 || wb = 1 || wb = -1
@@ -127,7 +127,7 @@ let rec rebalance(tree : 'a avl) : 'a avl =
       else
         if wbg = -1
         then rgd(tree) 
-        else failwith "1."
+        else failwith "weight_balance(tree) must be in {-2;-1;0;1;2}"
     else
       let wbd : int = weight_balance(rson(tree)) in
       if wb = -2
@@ -137,7 +137,7 @@ let rec rebalance(tree : 'a avl) : 'a avl =
         else
           if wbd = 1
           then rdg(tree)
-          else failwith "2."
+          else failwith "weight_balance(tree) must be in {-2;-1;0;1;2}"
       else failwith "weight_balance(tree) must be in {-2;-1;0;1;2}"
 ;;
 
@@ -257,11 +257,11 @@ let rec avl_seek(t, e : 'a avl * 'a) : bool =
 avl_seek(a4, 10);;
 avl_seek(a5, 10);;
 
-(** 2.2 Implantaion d'un module Av1 **)
+(** 2.2 Implantaion d'un module Avl **)
 
 (* Question 1 *)
 
-(* Construit un ABR à partir d'une liste d'élem avec des insertions aux feuilles *)
+(* Construit un avl à partir d'une liste d'élem *)
 let rec avl_lbuild(l : 'a list) : 'a avl =
   match l with
   | [] -> empty()
@@ -271,7 +271,7 @@ let rec avl_lbuild(l : 'a list) : 'a avl =
 show_avl(avl_lbuild([10;14;11;9;7;4;5;3;2;12]));;
 show_avl(avl_lbuild([8;14;12;6;5;10]));;
 
-(* Crée des arbres avl à partir d'une suite d'entiers *)
+(* Crée des arbres avl à partir d'une suite d'entiers aléatoire *)
 let avl_rnd_create(node_number, limit : int * int) : 'a avl =
   Random.self_init();
   let rec list_rnd_create(size, limit : int * int) : int list =
@@ -292,18 +292,6 @@ show_avl(a7);;
 
 let a8 = avl_rnd_create(1000, 10000);;
 weight_balance(a8);;
-
-let rec test(num : int) : unit =
-  if num = 0
-  then ()
-  else
-    let wb = weight_balance(avl_rnd_create(1000, 10000)) in
-    if wb > 1 || wb < -1
-    then failwith ""
-    else test(num-1)
-;;
-
-test(100);;
 
 let cmpl(node_number, limit : int * int) : float * float * float =
   let a = avl_rnd_create(node_number, limit) in
@@ -339,27 +327,92 @@ let t = Sys.time() in
 
 (* Question 2 *)
 
-(* Calcule la moyenne de déséquilibre de plusieurs avl avec des sous-suites ordonnées *)
-let average_weight_balance_sl(nb_sl, tree_number, limit, order, func : int * int * int * (int -> int) * (int * int * (int -> int) -> int list)) : float =
+(* Rééquilibrage d'un avl en comptant le nombre de rotation *)
+let rec rebalance_bis(tree : 'a avl) : ('a avl * int) =
+  let ((wb, v), g, d) = (root(tree), lson(tree), rson(tree)) in
+  if wb = 0 || wb = 1 || wb = -1
+  then (tree, 0)
+  else
+    let wbg : int = weight_balance(g) in
+    if wb = 2
+    then
+      if wbg = 1 || wbg = 0
+      then (rd(tree), 1)
+      else
+        if wbg = -1
+        then (rgd(tree), 1) 
+        else failwith "weight_balance(tree) must be in {-2;-1;0;1;2}"
+    else
+      let wbd : int = weight_balance(rson(tree)) in
+      if wb = -2
+      then
+        if wbd = -1 || wbd = 0
+        then (rg(tree), 1)
+        else
+          if wbd = 1
+          then (rdg(tree), 1)
+          else failwith "weight_balance(tree) must be in {-2;-1;0;1;2}"
+      else failwith "weight_balance(tree) must be in {-2;-1;0;1;2}"
+;;
+
+(* ajout d'un noeud dans un avl en comptant le nombre de rotation *)
+let rec ajt_val_bis(elem, tree: 'a * 'a avl) : ('a avl * int) =
+  if isEmpty(tree)
+  then (rooting((0, elem), empty(), empty()), 0)
+  else
+    let ((wb, v), g, d) = (root(tree), lson(tree), rson(tree)) in
+    if elem < v
+    then
+      let (ng, cg) = ajt_val_bis(elem, g) in
+      let (wbg, wbng) = (weight_balance(g), weight_balance(ng)) in
+      if isEmpty(g) || (wbg = 0 && wbng <> 0)
+      then rebalance_bis(rooting((wb + 1, v), ng, d))
+      else (rooting((wb, v), ng, d), cg)
+    else
+      if elem > v
+      then
+        let (nd, cd) = ajt_val_bis(elem, d) in
+        let (wbd, wbnd) = (weight_balance(d), weight_balance(nd)) in
+        if isEmpty(d) || (wbd = 0 && wbnd <> 0)
+        then rebalance_bis(rooting((wb - 1, v), g, nd))
+        else (rooting((wb, v), g, nd), cd)
+      else (tree, 0)                         
+;;
+
+(* Construit un avl à partir d'une liste d'élem  en comptant le nombre de rotation *)
+let rec avl_lbuild_bis(l : 'a list) : ('a avl * int) =
+  match l with
+  | [] -> (empty(), 0)
+  | v::lt -> let (tree, cpt) = avl_lbuild_bis(lt) in
+             let (t, c) = ajt_val_bis(v, tree) in
+             (t, c + cpt)
+;;
+
+avl_lbuild_bis([10;14;11;9;7;4;5;2;3;12]);;
+
+(* Calcule le nombre moyen de rotation de plusieurs avl avec des sous-suites ordonnées *)
+let average_rotation_sl(nb_sl, tree_number, limit, order, func : int * int * int * (int -> int) * (int * int * (int -> int) -> int list)) : float =
   let rec sum(nb_sl, tree_number, limit, order, func) : int =
     if tree_number = 0
     then 0
-    else weight_balance(avl_lbuild(func(nb_sl, limit, order))) + sum(nb_sl, tree_number-1, limit, order, func)
+    else
+      let (tree, cpt) = avl_lbuild_bis(func(nb_sl, limit, order)) in
+      cpt + sum(nb_sl, tree_number-1, limit, order, func)
   in (float_of_int (sum(nb_sl, tree_number, limit, order, func))) /. (float_of_int tree_number)
 ;;
 
-average_weight_balance_sl(5, 100, 100, (function x -> x * x), list_rnd_create_rnd_sl);;
-average_weight_balance_sl(5, 100, 100, (function x -> x * 2), list_rnd_create_rnd_sl);;
-average_weight_balance_sl(5, 100, 100, (function x -> x + 2), list_rnd_create_rnd_sl);;
+average_rotation_sl(5, 100, 100, (function x -> x * x), list_rnd_create_rnd_sl);;
+average_rotation_sl(5, 100, 100, (function x -> x * 2), list_rnd_create_rnd_sl);;
+average_rotation_sl(5, 100, 100, (function x -> x + 2), list_rnd_create_rnd_sl);;
 
-average_weight_balance_sl(5, 100, 100, (function x -> x * x), list_rnd_create_regular_sl);;
-average_weight_balance_sl(5, 100, 100, (function x -> x * 2), list_rnd_create_regular_sl);;
-average_weight_balance_sl(5, 100, 100, (function x -> x + 2), list_rnd_create_regular_sl);;
+average_rotation_sl(5, 100, 100, (function x -> x * x), list_rnd_create_regular_sl);;
+average_rotation_sl(5, 100, 100, (function x -> x * 2), list_rnd_create_regular_sl);;
+average_rotation_sl(5, 100, 100, (function x -> x + 2), list_rnd_create_regular_sl);;
 
-average_weight_balance_sl(5, 100, 100, (function x -> x * x), list_rnd_create_inc_sl);;
-average_weight_balance_sl(5, 100, 100, (function x -> x * 2), list_rnd_create_inc_sl);;
-average_weight_balance_sl(5, 100, 100, (function x -> x + 2), list_rnd_create_inc_sl);;
+average_rotation_sl(5, 100, 100, (function x -> x * x), list_rnd_create_inc_sl);;
+average_rotation_sl(5, 100, 100, (function x -> x * 2), list_rnd_create_inc_sl);;
+average_rotation_sl(5, 100, 100, (function x -> x + 2), list_rnd_create_inc_sl);;
 
-average_weight_balance_sl(5, 100, 100, (function x -> x * x), list_rnd_create_dec_sl);;
-average_weight_balance_sl(5, 100, 100, (function x -> x * 2), list_rnd_create_dec_sl);;
-average_weight_balance_sl(5, 100, 100, (function x -> x + 2), list_rnd_create_dec_sl);;
+average_rotation_sl(5, 100, 100, (function x -> x * x), list_rnd_create_dec_sl);;
+average_rotation_sl(5, 100, 100, (function x -> x * 2), list_rnd_create_dec_sl);;
+average_rotation_sl(5, 100, 100, (function x -> x + 2), list_rnd_create_dec_sl);;
