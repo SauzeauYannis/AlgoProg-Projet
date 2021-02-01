@@ -216,9 +216,10 @@ let rec suppr_val(elem, tree : 'a * 'a avl) : 'a avl =
           if isEmpty(g)
           then d
           else
-            if weight_balance(g) = 0 && not(isEmpty(g)) && not(isEmpty(rson(g)))
-            then rebalance(rooting((wb, avl_max(g)), avl_dmax(g), d))
-            else rebalance(rooting((wb - 1, avl_max(g)), avl_dmax(g), d))
+            let amax = avl_dmax(g) in
+            if ((weight_balance(g) = 0 && not(isEmpty(g))) || (weight_balance(amax) = weight_balance(g))) && not(isEmpty(lson(g)))
+            then rebalance(rooting((wb, avl_max(g)), amax, d))
+            else rebalance(rooting((wb - 1, avl_max(g)), amax, d))
 ;;
 
 (* Dessine un avl *)
@@ -234,7 +235,9 @@ show_avl(a5);;
 let a6 = suppr_val(12,suppr_val(3,suppr_val(2,suppr_val(2,suppr_val(5,suppr_val(4,suppr_val(7,suppr_val(9,suppr_val(11,suppr_val(14,suppr_val(10, a4)))))))))));;
 show_avl(a6);;
 
-let a7 = suppr_val(11,suppr_val(4,suppr_val(5,a4)));;
+let a7 = suppr_val(4,suppr_val(5,a4));;
+show_avl(a7);;
+let a7 = suppr_val(14,suppr_val(2,suppr_val(12,suppr_val(3,suppr_val(7,suppr_val(9,suppr_val(10,suppr_val(11,suppr_val(4,suppr_val(5,a4))))))))));;
 show_avl(a7);;
 
 (* Question 4 *)
