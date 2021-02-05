@@ -4,7 +4,7 @@
 	SAUZEAU Yannis
 **)
 
-(* Uncomment the load of your ocaml version *)
+(* Décommenter la commande '#directory ...' selon votre version d'OCaml *)
 
 (* OCaml version 4.02.3 *)
 (* #directory "libraries/4.02.3/";; *)
@@ -42,12 +42,12 @@ type 'a avl = (int * 'a) bst;;
 let weight_balance(tree : 'a avl) : int =
   if isEmpty(tree)
   then 0
-  else let (wb, r) = root(tree) in wb
+  else let (wb, _) = root(tree) in wb
 ;;
 
 (* Valeur de la racine d'un arbre AVL *)
 let root_val(tree : 'a avl) : int =
-  let (wb, r) = root(tree) in
+  let (_, r) = root(tree) in
   r
 ;;
 
@@ -127,7 +127,7 @@ let rec rebalance(tree : 'a avl) : 'a avl =
       else
         if wbg = -1
         then rgd(tree) 
-        else failwith "weight_balance(tree) must be in {-2;-1;0;1;2}"
+        else failwith "weight_balance(tree) incorrect value"
     else
       let wbd : int = weight_balance(rson(tree)) in
       if wb = -2
@@ -137,13 +137,13 @@ let rec rebalance(tree : 'a avl) : 'a avl =
         else
           if wbd = 1
           then rdg(tree)
-          else failwith "weight_balance(tree) must be in {-2;-1;0;1;2}"
+          else failwith "weight_balance(tree) incorrect value"
       else failwith "weight_balance(tree) must be in {-2;-1;0;1;2}"
 ;;
 
 (* Question 3 *)
 
-(* ajout d'un noeud dans un AVL *)
+(* Ajout d'une valeur dans un AVL *)
 let rec ajt_val(elem, tree : 'a * 'a avl) : 'a avl =
   if isEmpty(tree)
   then rooting((0, elem), empty(), empty())
@@ -167,7 +167,7 @@ let rec ajt_val(elem, tree : 'a * 'a avl) : 'a avl =
       else tree                          
 ;;
 
-(* max d'un avl *)
+(* Valeur maximale d'un AVL *)
 let rec avl_max(tree : 'a avl) : 'a =
   if isEmpty(tree)
   then invalid_arg "avl_max : tree must not be empty"
@@ -178,7 +178,7 @@ let rec avl_max(tree : 'a avl) : 'a =
     else avl_max(d)
 ;;
 
-(* avl sans son max *)
+(* AVL sans son maximum *)
 let rec avl_dmax(tree : 'a avl) : 'a avl =
   if isEmpty(tree)
   then invalid_arg "avl_dmax : tree must not be empty"
@@ -192,7 +192,7 @@ let rec avl_dmax(tree : 'a avl) : 'a avl =
       else rebalance(rooting((wb + 1, v), g, avl_dmax(d)))
 ;;
 
-(* suppression d'un noeud dans un AVL *)
+(* Suppression d'une valeur dans un AVL *)
 let rec suppr_val(elem, tree : 'a * 'a avl) : 'a avl =
   if isEmpty(tree)
   then empty()
@@ -225,23 +225,22 @@ let rec suppr_val(elem, tree : 'a * 'a avl) : 'a avl =
 (* Dessine un avl *)
 let show_avl(tree : 'a avl) : unit = show((fun (wb, root) -> (string_of_int wb) ^ " " ^ (string_of_int root)), tree);;
 
+(* Création de l'AVL présent dans le cours diapo 12 *)
 let a4 = ajt_val(10,ajt_val(14,ajt_val(11,ajt_val(9,ajt_val(7,ajt_val(4,ajt_val(5,ajt_val(2,ajt_val(3,ajt_val(12, empty()))))))))));;
 show_avl(a4);;
 avl_max(a4);;
 
+(* Suppression successive de la valeur maximale de a4 jusqu'à un arbre vide *)
 let a5 = avl_dmax(avl_dmax(avl_dmax(avl_dmax(avl_dmax(avl_dmax(avl_dmax(avl_dmax(avl_dmax(avl_dmax(a4))))))))));;
 show_avl(a5);;
 
+(* Suppression des valeurs de a4 dans l'ordre où elles ont étés ajoutés *)
 let a6 = suppr_val(12,suppr_val(3,suppr_val(2,suppr_val(2,suppr_val(5,suppr_val(4,suppr_val(7,suppr_val(9,suppr_val(11,suppr_val(14,suppr_val(10, a4)))))))))));;
 show_avl(a6);;
 
-let a7 = suppr_val(4,suppr_val(5,a4));;
-show_avl(a7);;
-let a7 = suppr_val(14,suppr_val(2,suppr_val(12,suppr_val(3,suppr_val(7,suppr_val(9,suppr_val(10,suppr_val(11,suppr_val(4,suppr_val(5,a4))))))))));;
-show_avl(a7);;
-
 (* Question 4 *)
 
+(* Recherche d'une valeur dans un AVL *)
 let rec avl_seek(t, e : 'a avl * 'a) : bool =
   if isEmpty(t)
   then false
@@ -253,7 +252,8 @@ let rec avl_seek(t, e : 'a avl * 'a) : bool =
       then avl_seek(rson(t), e)
       else true
 ;;
-  
+
+(* Recherche de la valeur 10 dans a4 et a5 *)
 avl_seek(a4, 10);;
 avl_seek(a5, 10);;
 
@@ -268,6 +268,7 @@ let rec avl_lbuild(l : 'a list) : 'a avl =
   | v::lt -> ajt_val(v, avl_lbuild(lt))
 ;;
 
+(* Création d'AVL avec une liste *)
 show_avl(avl_lbuild([10;14;11;9;7;4;5;3;2;12]));;
 show_avl(avl_lbuild([8;14;12;6;5;10]));;
 
@@ -282,33 +283,22 @@ let avl_rnd_create(node_number, limit : int * int) : 'a avl =
   in avl_lbuild(list_rnd_create(node_number, limit))
 ;;
 
+(* Créé un AVL de 10 noeuds de valeurs aléatoires de 0 à 99 *)
 let a6 = avl_rnd_create(10, 100);;
 weight_balance(a6);;
 show_avl(a6);;
 
+(* Créé un AVL de 50 noeuds de valeurs aléatoires de 0 à 999 *)
 let a7 = avl_rnd_create(50, 1000);;
 weight_balance(a7);;
 show_avl(a7);;
 
+(* Créé un AVL de 1 000 noeuds de valeurs aléatoires de 0 à 9 999 *)
 let a8 = avl_rnd_create(1000, 10000);;
 weight_balance(a8);;
 
-let cmpl(node_number, limit : int * int) : float * float * float =
-  let a = avl_rnd_create(node_number, limit) in
-  let t1 = Sys.time() in
-  let tmp = ajt_val(5000, a) in
-  let t2 = Sys.time() -. t1 in
-  let tmp2 = avl_seek(a, 5000) in
-  let t3 = Sys.time() -. t1 -. t2 in
-  let tmp3 = suppr_val(5000, a) in
-  let t4 = Sys.time() -. t1 -. t2 -. t3 in
-  (t2, t3, t4)
-;;
-
-cmpl(10000, 100000);;
-
+(* Calcul le temps d'éxécution des valeur d'ajout de suppression et de recherche pour un AVL de 10 000 noeuds de valeurs aléatoires de 0 à 99 999 *)
 let a9 = avl_rnd_create(10000, 100000);;
-
 let t = Sys.time() in
     let a10 = ajt_val(5000, a9) in
     Printf.printf "Execution time: %f secondsn\n"
@@ -324,10 +314,9 @@ let t = Sys.time() in
     a11
 ;;
     
-
 (* Question 2 *)
 
-(* Rééquilibrage d'un avl en comptant le nombre de rotation *)
+(* Rééquilibrage d'un avl en comptant le nombre de rotations *)
 let rec rebalance_bis(tree : 'a avl) : ('a avl * int) =
   let ((wb, v), g, d) = (root(tree), lson(tree), rson(tree)) in
   if wb = 0 || wb = 1 || wb = -1
@@ -341,7 +330,7 @@ let rec rebalance_bis(tree : 'a avl) : ('a avl * int) =
       else
         if wbg = -1
         then (rgd(tree), 1) 
-        else failwith "weight_balance(tree) must be in {-2;-1;0;1;2}"
+        else failwith "weight_balance(tree) incorrect value"
     else
       let wbd : int = weight_balance(rson(tree)) in
       if wb = -2
@@ -351,11 +340,11 @@ let rec rebalance_bis(tree : 'a avl) : ('a avl * int) =
         else
           if wbd = 1
           then (rdg(tree), 1)
-          else failwith "weight_balance(tree) must be in {-2;-1;0;1;2}"
+          else failwith "weight_balance(tree) incorrect value"
       else failwith "weight_balance(tree) must be in {-2;-1;0;1;2}"
 ;;
 
-(* ajout d'un noeud dans un avl en comptant le nombre de rotation *)
+(* ajout d'un noeud dans un avl en comptant le nombre de rotations *)
 let rec ajt_val_bis(elem, tree: 'a * 'a avl) : ('a avl * int) =
   if isEmpty(tree)
   then (rooting((0, elem), empty(), empty()), 0)
@@ -379,7 +368,7 @@ let rec ajt_val_bis(elem, tree: 'a * 'a avl) : ('a avl * int) =
       else (tree, 0)                         
 ;;
 
-(* Construit un avl à partir d'une liste d'élem  en comptant le nombre de rotation *)
+(* Construit un avl à partir d'une liste d'élem  en comptant le nombre de rotations *)
 let rec avl_lbuild_bis(l : 'a list) : ('a avl * int) =
   match l with
   | [] -> (empty(), 0)
@@ -387,8 +376,6 @@ let rec avl_lbuild_bis(l : 'a list) : ('a avl * int) =
              let (t, c) = ajt_val_bis(v, tree) in
              (t, c + cpt)
 ;;
-
-avl_lbuild_bis([10;14;11;9;7;4;5;2;3;12]);;
 
 (* Calcule le nombre moyen de rotation de plusieurs avl avec des sous-suites ordonnées *)
 let average_rotation_sl(nb_sl, tree_number, limit, order, func : int * int * int * (int -> int) * (int * int * (int -> int) -> int list)) : float =
@@ -401,18 +388,22 @@ let average_rotation_sl(nb_sl, tree_number, limit, order, func : int * int * int
   in (float_of_int (sum(nb_sl, tree_number, limit, order, func))) /. (float_of_int tree_number)
 ;;
 
+(* Moyenne du nombre de rotations pour 100 AVL créé à partir de 5 sous-suites de longueurs aléatoires entre 1 et 5 *)
 average_rotation_sl(5, 100, 100, (function x -> x * x), list_rnd_create_rnd_sl);;
 average_rotation_sl(5, 100, 100, (function x -> x * 2), list_rnd_create_rnd_sl);;
 average_rotation_sl(5, 100, 100, (function x -> x + 2), list_rnd_create_rnd_sl);;
 
+(* Moyenne du nombre de rotations pour 100 AVL créé à partir de 5 sous-suites de longueurs aléatoires entre 1 et 5 *)
 average_rotation_sl(5, 100, 100, (function x -> x * x), list_rnd_create_regular_sl);;
 average_rotation_sl(5, 100, 100, (function x -> x * 2), list_rnd_create_regular_sl);;
 average_rotation_sl(5, 100, 100, (function x -> x + 2), list_rnd_create_regular_sl);;
 
+(* Moyenne du nombre de rotations pour 100 AVL créé à partir de 5 sous-suites de longueurs aléatoires entre 1 et 5 *)
 average_rotation_sl(5, 100, 100, (function x -> x * x), list_rnd_create_inc_sl);;
 average_rotation_sl(5, 100, 100, (function x -> x * 2), list_rnd_create_inc_sl);;
 average_rotation_sl(5, 100, 100, (function x -> x + 2), list_rnd_create_inc_sl);;
 
+(* Moyenne du nombre de rotations pour 100 AVL créé à partir de 5 sous-suites de longueurs aléatoires entre 1 et 5 *)
 average_rotation_sl(5, 100, 100, (function x -> x * x), list_rnd_create_dec_sl);;
 average_rotation_sl(5, 100, 100, (function x -> x * 2), list_rnd_create_dec_sl);;
 average_rotation_sl(5, 100, 100, (function x -> x + 2), list_rnd_create_dec_sl);;
