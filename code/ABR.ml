@@ -174,19 +174,19 @@ let average_weight_balance_sl(nb_sl, tree_number, limit, order, func : int * int
 (* Moyenne du déséquilibre pour 100 arbres créé à partir de 5 sous-suites de longueurs aléatoires entre 1 et 5 *)
 average_weight_balance_sl(5, 100, 100, (function x -> x * x), list_rnd_create_rnd_sl);;
 average_weight_balance_sl(5, 100, 100, (function x -> x * 2), list_rnd_create_rnd_sl);;
-average_weight_balance_sl(5, 100, 100, (function x -> x + 2), list_rnd_create_rnd_sl);;
+average_weight_balance_sl(5, 100, 100, (function x -> x + 1), list_rnd_create_rnd_sl);;
 
 (* Moyenne du déséquilibre pour 100 arbres créé à partir de 5 sous-suites de longueurs 3 *)
 average_weight_balance_sl(5, 100, 100, (function x -> x * x), list_rnd_create_regular_sl);;
 average_weight_balance_sl(5, 100, 100, (function x -> x * 2), list_rnd_create_regular_sl);;
-average_weight_balance_sl(5, 100, 100, (function x -> x + 2), list_rnd_create_regular_sl);;
+average_weight_balance_sl(5, 100, 100, (function x -> x + 1), list_rnd_create_regular_sl);;
 
 (* Moyenne du déséquilibre pour 100 arbres créé à partir de 5 sous-suites de longueurs croissantes *)
 average_weight_balance_sl(5, 100, 100, (function x -> x * x), list_rnd_create_inc_sl);;
 average_weight_balance_sl(5, 100, 100, (function x -> x * 2), list_rnd_create_inc_sl);;
-average_weight_balance_sl(5, 100, 100, (function x -> x + 2), list_rnd_create_inc_sl);;
+average_weight_balance_sl(5, 100, 100, (function x -> x + 1), list_rnd_create_inc_sl);;
 
 (* Moyenne du déséquilibre pour 100 arbres créé à partir de 5 sous-suites de longueurs décroissantes *)
 average_weight_balance_sl(5, 100, 100, (function x -> x * x), list_rnd_create_dec_sl);;
 average_weight_balance_sl(5, 100, 100, (function x -> x * 2), list_rnd_create_dec_sl);;
-average_weight_balance_sl(5, 100, 100, (function x -> x + 2), list_rnd_create_dec_sl);;
+average_weight_balance_sl(5, 100, 100, (function x -> x + 1), list_rnd_create_dec_sl);;

@@ -311,7 +311,7 @@ let t = Sys.time() in
     let a11 = suppr_val(5000, a10) in
     Printf.printf "Execution time: %f secondsn\n"
       (Sys.time() -. t);
-    a11
+    (a11, res) (* pour éviter les warnings *)
 ;;
     
 (* Question 2 *)
@@ -389,21 +389,21 @@ let average_rotation_sl(nb_sl, tree_number, limit, order, func : int * int * int
 ;;
 
 (* Moyenne du nombre de rotations pour 100 AVL créé à partir de 5 sous-suites de longueurs aléatoires entre 1 et 5 *)
-average_rotation_sl(5, 100, 100, (function x -> x * x), list_rnd_create_rnd_sl);;
-average_rotation_sl(5, 100, 100, (function x -> x * 2), list_rnd_create_rnd_sl);;
-average_rotation_sl(5, 100, 100, (function x -> x + 2), list_rnd_create_rnd_sl);;
+average_rotation_sl(5, 100, 100, (function x -> x + 1), list_rnd_create_rnd_sl);;
+average_rotation_sl(10, 100, 100, (function x -> x + 1), list_rnd_create_rnd_sl);;
+average_rotation_sl(50, 100, 100, (function x -> x + 1), list_rnd_create_rnd_sl);;
 
 (* Moyenne du nombre de rotations pour 100 AVL créé à partir de 5 sous-suites de longueurs aléatoires entre 1 et 5 *)
-average_rotation_sl(5, 100, 100, (function x -> x * x), list_rnd_create_regular_sl);;
-average_rotation_sl(5, 100, 100, (function x -> x * 2), list_rnd_create_regular_sl);;
-average_rotation_sl(5, 100, 100, (function x -> x + 2), list_rnd_create_regular_sl);;
+average_rotation_sl(5, 100, 100, (function x -> x + 1), list_rnd_create_regular_sl);;
+average_rotation_sl(10, 100, 100, (function x -> x + 1), list_rnd_create_regular_sl);;
+average_rotation_sl(50, 100, 100, (function x -> x + 1), list_rnd_create_regular_sl);;
 
 (* Moyenne du nombre de rotations pour 100 AVL créé à partir de 5 sous-suites de longueurs aléatoires entre 1 et 5 *)
-average_rotation_sl(5, 100, 100, (function x -> x * x), list_rnd_create_inc_sl);;
-average_rotation_sl(5, 100, 100, (function x -> x * 2), list_rnd_create_inc_sl);;
-average_rotation_sl(5, 100, 100, (function x -> x + 2), list_rnd_create_inc_sl);;
+average_rotation_sl(5, 100, 100, (function x -> x + 1), list_rnd_create_inc_sl);;
+average_rotation_sl(10, 100, 100, (function x -> x + 1), list_rnd_create_inc_sl);;
+average_rotation_sl(50, 100, 100, (function x -> x + 1), list_rnd_create_inc_sl);;
 
 (* Moyenne du nombre de rotations pour 100 AVL créé à partir de 5 sous-suites de longueurs aléatoires entre 1 et 5 *)
-average_rotation_sl(5, 100, 100, (function x -> x * x), list_rnd_create_dec_sl);;
-average_rotation_sl(5, 100, 100, (function x -> x * 2), list_rnd_create_dec_sl);;
-average_rotation_sl(5, 100, 100, (function x -> x + 2), list_rnd_create_dec_sl);;
+average_rotation_sl(5, 100, 100, (function x -> x + 1), list_rnd_create_dec_sl);;
+average_rotation_sl(10, 100, 100, (function x -> x + 1), list_rnd_create_inc_sl);;
+average_rotation_sl(50, 100, 100, (function x -> x + 1), list_rnd_create_inc_sl);;
