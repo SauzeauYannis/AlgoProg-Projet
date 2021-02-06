@@ -93,11 +93,11 @@ Once opam is installed you will need to download one of the versions of OCaml pr
 For that, launch the commands (under linux):
 
 ```shell
-opam install 4.11.1
+$ opam install 4.11.1
 
-opam switch 4.11.1
+$ opam switch 4.11.1
 
-eval $(opam env)
+$ eval $(opam env)
 ```
 
 Once these commands are executed you have OCaml version 4.11.1 and you can test the programs "[code/ABR.ml](https://github.com/SauzeauYannis/AlgoProg-Projet/blob/main/code/ABR.ml)" and "[code/AVL.ml](https://github.com/SauzeauYannis/AlgoProg-Projet/blob/main/code/AVL.ml)" by taking care to load the command :
