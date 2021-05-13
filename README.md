@@ -69,7 +69,7 @@ L'exemple ci-dessus est valable pour la version 4.11.1 mais vous pouvez le rép�
 
 ### Résultat
 
-Nous avons obtenu la note de ?/20. (Résultat en mars)
+Nous avons obtenu la note de 19/20.
 
 <a name="en"/>
 
@@ -129,4 +129,4 @@ The above example is valid for version 4.11.1 but you can repeat it with one of 
 
 ### Result
 
-We obtained a score of ?/20. (Result in March)
+We obtained a score of 19/20.
